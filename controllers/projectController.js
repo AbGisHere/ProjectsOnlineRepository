@@ -121,9 +121,13 @@ const search = asyncHandler(async (req, res) => {
     binds.technology = `%${technology}%`;
   }
 
+  // NOTE: no DISTINCT here — Abstract is a CLOB and Oracle can't compare
+  // CLOBs for uniqueness (ORA-22848). It's unneeded anyway: every filter
+  // above is an EXISTS subquery, not a join, so Project rows can't be
+  // duplicated by the WHERE clause.
   const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
   const result = await db.execute(
-    `SELECT DISTINCT p.*, t.Team_Name
+    `SELECT p.*, t.Team_Name
      FROM Project p
      JOIN Team t ON t.Team_ID = p.Team_ID
      ${where}

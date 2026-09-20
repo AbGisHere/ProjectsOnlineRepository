@@ -6,6 +6,9 @@ const oracledb = require('oracledb');
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 // Auto-commit each execute() call unless a transaction explicitly disables it.
 oracledb.autoCommit = true;
+// Fetch CLOB columns (e.g. Project.Abstract) as plain JS strings instead of
+// streaming Lob objects — otherwise res.json() throws trying to serialize them.
+oracledb.fetchAsString = [oracledb.CLOB];
 
 let pool;
 
