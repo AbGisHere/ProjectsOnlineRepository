@@ -44,13 +44,22 @@ const create = asyncHandler(async (req, res) => {
 
 const update = asyncHandler(async (req, res) => {
   const { name, email, department_id, year, credits, score } = req.body;
-  const result = await db.execute(
-    `UPDATE Student
-     SET Name = :name, Email = :email, Department_ID = :department_id,
-         Year = :year, Credits = :credits, Score = :score
-     WHERE Student_ID = :id`,
-    { name, email, department_id, year, credits, score, id: req.params.id }
-  );
+
+  // Only include fields actually sent, so omitting an optional field (e.g.
+  // credits/score) doesn't silently overwrite it with NULL.
+  const fields = { Name: name, Email: email, Department_ID: department_id, Year: year, Credits: credits, Score: score };
+  const sets = [];
+  const binds = { id: req.params.id };
+  for (const [col, val] of Object.entries(fields)) {
+    if (val !== undefined) {
+      const bindName = col.toLowerCase();
+      sets.push(`${col} = :${bindName}`);
+      binds[bindName] = val;
+    }
+  }
+  if (!sets.length) throw new ApiError(400, 'No fields to update');
+
+  const result = await db.execute(`UPDATE Student SET ${sets.join(', ')} WHERE Student_ID = :id`, binds);
   if (!result.rowsAffected) throw new ApiError(404, 'Student not found');
   res.json({ success: true, message: 'Student updated' });
 });

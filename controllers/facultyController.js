@@ -32,13 +32,20 @@ const create = asyncHandler(async (req, res) => {
 
 const update = asyncHandler(async (req, res) => {
   const { name, email, department_id, designation, score } = req.body;
-  const result = await db.execute(
-    `UPDATE Faculty
-     SET Name = :name, Email = :email, Department_ID = :department_id,
-         Designation = :designation, Score = :score
-     WHERE Faculty_ID = :id`,
-    { name, email, department_id, designation, score, id: req.params.id }
-  );
+
+  const fields = { Name: name, Email: email, Department_ID: department_id, Designation: designation, Score: score };
+  const sets = [];
+  const binds = { id: req.params.id };
+  for (const [col, val] of Object.entries(fields)) {
+    if (val !== undefined) {
+      const bindName = col.toLowerCase();
+      sets.push(`${col} = :${bindName}`);
+      binds[bindName] = val;
+    }
+  }
+  if (!sets.length) throw new ApiError(400, 'No fields to update');
+
+  const result = await db.execute(`UPDATE Faculty SET ${sets.join(', ')} WHERE Faculty_ID = :id`, binds);
   if (!result.rowsAffected) throw new ApiError(404, 'Faculty not found');
   res.json({ success: true, message: 'Faculty updated' });
 });

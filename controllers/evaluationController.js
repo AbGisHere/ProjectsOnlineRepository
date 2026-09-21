@@ -38,10 +38,20 @@ const create = asyncHandler(async (req, res) => {
 
 const update = asyncHandler(async (req, res) => {
   const { score, feedback } = req.body;
-  const result = await db.execute(
-    'UPDATE Evaluation SET Score = :score, Feedback = :feedback WHERE Evaluation_ID = :id',
-    { score, feedback, id: req.params.id }
-  );
+
+  const sets = [];
+  const binds = { id: req.params.id };
+  if (score !== undefined) {
+    sets.push('Score = :score');
+    binds.score = score;
+  }
+  if (feedback !== undefined) {
+    sets.push('Feedback = :feedback');
+    binds.feedback = feedback;
+  }
+  if (!sets.length) throw new ApiError(400, 'No fields to update');
+
+  const result = await db.execute(`UPDATE Evaluation SET ${sets.join(', ')} WHERE Evaluation_ID = :id`, binds);
   if (!result.rowsAffected) throw new ApiError(404, 'Evaluation not found');
   res.json({ success: true, message: 'Evaluation updated' });
 });

@@ -47,23 +47,26 @@ const create = asyncHandler(async (req, res) => {
 
 const update = asyncHandler(async (req, res) => {
   const { title, abstract, academic_year, team_id, status, git_url, submission_date } = req.body;
-  const result = await db.execute(
-    `UPDATE Project
-     SET Title = :title, Abstract = :abstract, Academic_Year = :academic_year,
-         Team_ID = :team_id, Status = :status, GitURL = :git_url,
-         Submission_Date = ${submission_date ? 'TO_DATE(:submission_date, \'YYYY-MM-DD\')' : 'NULL'}
-     WHERE Project_ID = :id`,
-    {
-      title,
-      abstract,
-      academic_year,
-      team_id,
-      status,
-      git_url,
-      id: req.params.id,
-      ...(submission_date ? { submission_date } : {}),
+
+  // Only include fields actually sent, so an omitted optional field (e.g.
+  // abstract, git_url) doesn't silently overwrite it with NULL.
+  const simpleFields = { Title: title, Abstract: abstract, Academic_Year: academic_year, Team_ID: team_id, Status: status, GitURL: git_url };
+  const sets = [];
+  const binds = { id: req.params.id };
+  for (const [col, val] of Object.entries(simpleFields)) {
+    if (val !== undefined) {
+      const bindName = col.toLowerCase();
+      sets.push(`${col} = :${bindName}`);
+      binds[bindName] = val;
     }
-  );
+  }
+  if (submission_date !== undefined) {
+    sets.push("Submission_Date = TO_DATE(:submission_date, 'YYYY-MM-DD')");
+    binds.submission_date = submission_date;
+  }
+  if (!sets.length) throw new ApiError(400, 'No fields to update');
+
+  const result = await db.execute(`UPDATE Project SET ${sets.join(', ')} WHERE Project_ID = :id`, binds);
   if (!result.rowsAffected) throw new ApiError(404, 'Project not found');
   res.json({ success: true, message: 'Project updated' });
 });
