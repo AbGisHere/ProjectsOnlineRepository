@@ -72,11 +72,26 @@ const update = asyncHandler(async (req, res) => {
     if (!guide.rows.length) throw new ApiError(400, 'Guide_ID must reference an existing Faculty');
   }
 
-  const result = await db.execute(
-    `UPDATE Team SET Team_Name = :team_name, Leader_ID = :leader_id, Guide_ID = :guide_id
-     WHERE Team_ID = :id`,
-    { team_name, leader_id, guide_id, id: req.params.id }
-  );
+  // Build the SET clause from only the fields actually sent, so an omitted
+  // leader_id/guide_id isn't overwritten with NULL (which would violate the
+  // NOT NULL constraint on those columns).
+  const sets = [];
+  const binds = { id: req.params.id };
+  if (team_name !== undefined) {
+    sets.push('Team_Name = :team_name');
+    binds.team_name = team_name;
+  }
+  if (leader_id !== undefined) {
+    sets.push('Leader_ID = :leader_id');
+    binds.leader_id = leader_id;
+  }
+  if (guide_id !== undefined) {
+    sets.push('Guide_ID = :guide_id');
+    binds.guide_id = guide_id;
+  }
+  if (!sets.length) throw new ApiError(400, 'No fields to update');
+
+  const result = await db.execute(`UPDATE Team SET ${sets.join(', ')} WHERE Team_ID = :id`, binds);
   if (!result.rowsAffected) throw new ApiError(404, 'Team not found');
   res.json({ success: true, message: 'Team updated' });
 });
