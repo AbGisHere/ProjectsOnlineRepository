@@ -1,7 +1,9 @@
 import bcrypt from 'bcryptjs';
-import { authenticate } from '../auth';
+import { authenticate } from '../auth/guard';
 import { execute } from '../db';
+import { createAuthAccount, deleteAuthAccount, syncAuthAccount } from '../auth/accounts';
 import { ApiError } from '../errors';
+import { checkEmailRule } from '../emailCheck';
 import { intParams, ok, route } from '../http';
 import { check, isEmail, isFloat, isInt, isString, minLength, notEmpty, optional } from '../validate';
 import { partialSet } from './partial';
@@ -38,6 +40,7 @@ export const students = {
       score: [optional, isFloat({ min: 0, max: 100 })],
     });
     const { student_id, email, department_id, year, credits, password, score } = body;
+    checkEmailRule('student', email);
     const name = trimmed(body.name);
     const hashed = await bcrypt.hash(String(password), SALT_ROUNDS);
     await execute(
@@ -45,6 +48,12 @@ export const students = {
        VALUES (:student_id, :name, :email, :department_id, :year, :credits, :password, :score)`,
       { student_id, name, email, department_id, year, credits: credits ?? 0, password: hashed, score: score ?? 0 }
     );
+    try {
+      await createAuthAccount('student', student_id, name, email, hashed);
+    } catch (err) {
+      await execute('DELETE FROM Student WHERE Student_ID = :id', { id: student_id });
+      throw err;
+    }
     return ok({ data: { student_id, name, email, department_id, year } }, 201);
   }),
 
@@ -58,6 +67,7 @@ export const students = {
       credits: [optional, isInt({ min: 0 })],
       score: [optional, isFloat({ min: 0, max: 100 })],
     });
+    checkEmailRule('student', body.email);
     const binds: Record<string, unknown> = { id: params.id };
     const sets = partialSet(
       { Name: trimmed(body.name), Email: body.email, Department_ID: body.department_id, Year: body.year, Credits: body.credits, Score: body.score },
@@ -65,15 +75,17 @@ export const students = {
     );
     const result = await execute(`UPDATE Student SET ${sets} WHERE Student_ID = :id`, binds);
     if (!result.rowsAffected) throw new ApiError(404, 'Student not found');
+    await syncAuthAccount('student', params.id, { name: trimmed(body.name), email: body.email });
     return ok({ message: 'Student updated' });
   }),
 
   // Requires a valid token, as before.
   remove: route(async ({ req, params }) => {
     intParams(params, 'id');
-    authenticate(req);
+    await authenticate(req);
     const result = await execute('DELETE FROM Student WHERE Student_ID = :id', { id: params.id });
     if (!result.rowsAffected) throw new ApiError(404, 'Student not found');
+    await deleteAuthAccount('student', params.id);
     return ok({ message: 'Student deleted' });
   }),
 
@@ -119,6 +131,7 @@ export const faculty = {
       score: [optional, isFloat({ min: 0, max: 100 })],
     });
     const { faculty_id, email, department_id, password, score } = body;
+    checkEmailRule('faculty', email);
     const name = trimmed(body.name);
     const designation = body.designation ?? null;
     const hashed = await bcrypt.hash(String(password), SALT_ROUNDS);
@@ -127,6 +140,12 @@ export const faculty = {
        VALUES (:faculty_id, :name, :email, :department_id, :designation, :password, :score)`,
       { faculty_id, name, email, department_id, designation, password: hashed, score: score ?? 0 }
     );
+    try {
+      await createAuthAccount('faculty', faculty_id, name, email, hashed);
+    } catch (err) {
+      await execute('DELETE FROM Faculty WHERE Faculty_ID = :id', { id: faculty_id });
+      throw err;
+    }
     return ok({ data: { faculty_id, name, email, department_id, designation } }, 201);
   }),
 
@@ -139,6 +158,7 @@ export const faculty = {
       designation: [optional, isString],
       score: [optional, isFloat({ min: 0, max: 100 })],
     });
+    checkEmailRule('faculty', body.email);
     const binds: Record<string, unknown> = { id: params.id };
     const sets = partialSet(
       { Name: trimmed(body.name), Email: body.email, Department_ID: body.department_id, Designation: body.designation, Score: body.score },
@@ -146,15 +166,17 @@ export const faculty = {
     );
     const result = await execute(`UPDATE Faculty SET ${sets} WHERE Faculty_ID = :id`, binds);
     if (!result.rowsAffected) throw new ApiError(404, 'Faculty not found');
+    await syncAuthAccount('faculty', params.id, { name: trimmed(body.name), email: body.email });
     return ok({ message: 'Faculty updated' });
   }),
 
   // Requires a valid token, as before.
   remove: route(async ({ req, params }) => {
     intParams(params, 'id');
-    authenticate(req);
+    await authenticate(req);
     const result = await execute('DELETE FROM Faculty WHERE Faculty_ID = :id', { id: params.id });
     if (!result.rowsAffected) throw new ApiError(404, 'Faculty not found');
+    await deleteAuthAccount('faculty', params.id);
     return ok({ message: 'Faculty deleted' });
   }),
 

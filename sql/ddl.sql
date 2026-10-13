@@ -5,6 +5,14 @@
 -- Drop order respects FK dependencies (children before parents).
 -- Run via: npm run ddl   (see scripts/runSql.js)
 
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE auth_verification CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE auth_account CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE auth_session CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE auth_user CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
+/
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE Admin CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
 /
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE Evaluation CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
@@ -209,5 +217,66 @@ CREATE TABLE Admin (
     Email      VARCHAR2(150)   NOT NULL UNIQUE,
     Password   VARCHAR2(255)   NOT NULL
 );
+
+-- ===========================================================================
+-- Better Auth tables (sign-in sessions for the web app). Named auth_* because
+-- USER and SESSION are reserved words in Oracle. Each auth_user row is linked
+-- to exactly one Student, Faculty or Admin row by (user_role, ref_id).
+-- ===========================================================================
+CREATE TABLE auth_user (
+    id              VARCHAR2(64)    CONSTRAINT pk_auth_user PRIMARY KEY,
+    name            VARCHAR2(100)   NOT NULL,
+    email           VARCHAR2(150)   NOT NULL CONSTRAINT uq_auth_user_email UNIQUE,
+    email_verified  NUMBER(1)       DEFAULT 0 NOT NULL,
+    image           VARCHAR2(500),
+    created_at      TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL,
+    updated_at      TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL,
+    user_role       VARCHAR2(10)    NOT NULL CHECK (user_role IN ('student', 'faculty', 'admin')),
+    ref_id          NUMBER(10)      NOT NULL,
+    CONSTRAINT uq_auth_user_ref UNIQUE (user_role, ref_id)
+);
+
+CREATE TABLE auth_session (
+    id              VARCHAR2(64)    CONSTRAINT pk_auth_session PRIMARY KEY,
+    expires_at      TIMESTAMP       NOT NULL,
+    token           VARCHAR2(255)   NOT NULL CONSTRAINT uq_auth_session_token UNIQUE,
+    created_at      TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL,
+    updated_at      TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL,
+    ip_address      VARCHAR2(100),
+    user_agent      VARCHAR2(500),
+    user_id         VARCHAR2(64)    NOT NULL,
+    CONSTRAINT fk_auth_session_user FOREIGN KEY (user_id)
+        REFERENCES auth_user (id) ON DELETE CASCADE
+);
+CREATE INDEX ix_auth_session_user ON auth_session (user_id);
+
+CREATE TABLE auth_account (
+    id                        VARCHAR2(64)    CONSTRAINT pk_auth_account PRIMARY KEY,
+    account_id                VARCHAR2(255)   NOT NULL,
+    provider_id               VARCHAR2(50)    NOT NULL,
+    user_id                   VARCHAR2(64)    NOT NULL,
+    access_token              VARCHAR2(2000),
+    refresh_token             VARCHAR2(2000),
+    id_token                  VARCHAR2(4000),
+    access_token_expires_at   TIMESTAMP,
+    refresh_token_expires_at  TIMESTAMP,
+    scope                     VARCHAR2(500),
+    password                  VARCHAR2(255),
+    created_at                TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL,
+    updated_at                TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL,
+    CONSTRAINT fk_auth_account_user FOREIGN KEY (user_id)
+        REFERENCES auth_user (id) ON DELETE CASCADE
+);
+CREATE INDEX ix_auth_account_user ON auth_account (user_id);
+
+CREATE TABLE auth_verification (
+    id                  VARCHAR2(64)    CONSTRAINT pk_auth_verification PRIMARY KEY,
+    identifier          VARCHAR2(255)   NOT NULL,
+    verification_value  VARCHAR2(2000)  NOT NULL,
+    expires_at          TIMESTAMP       NOT NULL,
+    created_at          TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL,
+    updated_at          TIMESTAMP       DEFAULT SYSTIMESTAMP NOT NULL
+);
+CREATE INDEX ix_auth_verification_id ON auth_verification (identifier);
 
 COMMIT;

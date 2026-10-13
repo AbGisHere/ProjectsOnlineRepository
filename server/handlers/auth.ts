@@ -1,7 +1,9 @@
 import bcrypt from 'bcryptjs';
-import { signToken, type Role } from '../auth';
+import { signToken, type Role } from '../auth/jwt';
 import { execute } from '../db';
+import { createAuthAccount } from '../auth/accounts';
 import { ApiError } from '../errors';
+import { checkEmailRule } from '../emailCheck';
 import { ok, route } from '../http';
 import { check, isEmail, isIn, isInt, isString, minLength, notEmpty, when } from '../validate';
 
@@ -15,7 +17,8 @@ const ROLE_CONFIG: Record<Role, { table: string; idCol: string }> = {
   admin: { table: 'Admin', idCol: 'Admin_ID' },
 };
 
-// POST /api/auth/register
+// POST /api/auth/register: creates the Student/Faculty/Admin row and its web
+// sign-in account, and returns a JWT for API clients.
 // body: { role, id, name, email, password, department_id?, year?, designation? }
 export const register = route(async ({ body }) => {
   check(body, {
@@ -28,7 +31,9 @@ export const register = route(async ({ body }) => {
     year: [when((b) => b.role === 'student', [isInt({ min: 1, max: 5 })], 'year is required for student (1-5)')],
   });
   const { role, id, name, email, password, department_id, year, designation } = body as Record<string, never>;
+  checkEmailRule(role, email);
   const hashed = await bcrypt.hash(String(password), SALT_ROUNDS);
+  const { table, idCol } = ROLE_CONFIG[role as Role];
 
   if (role === 'student') {
     await execute(
@@ -48,11 +53,22 @@ export const register = route(async ({ body }) => {
     });
   }
 
+  // Also open the web sign-in account; undo the person row if that fails so
+  // the two never drift apart.
+  try {
+    await createAuthAccount(role, id, name, email, hashed);
+  } catch (err) {
+    await execute(`DELETE FROM ${table} WHERE ${idCol} = :id`, { id });
+    throw err;
+  }
+
   const token = signToken({ id, role, email });
   return ok({ data: { id, role, email, token } }, 201);
 });
 
 // POST /api/auth/login  body: { role, email, password }
+// Token login for API clients. The web app signs in through Better Auth
+// (/api/auth/sign-in/email) instead.
 export const login = route(async ({ body }) => {
   check(body, { role: [isIn(ROLES)], email: [isEmail], password: [notEmpty] });
   const role = body.role as Role;

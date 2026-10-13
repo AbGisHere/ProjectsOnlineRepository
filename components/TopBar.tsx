@@ -27,8 +27,8 @@ export function TopBar() {
   useEffect(() => setOpen(false), [pathname]);
 
   const current = (href: string) => (pathname === href || pathname.startsWith(`${href}/`) ? 'page' : undefined);
-  const out = () => {
-    signOut();
+  const out = async () => {
+    await signOut();
     router.replace('/login');
   };
 

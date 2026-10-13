@@ -5,8 +5,6 @@
 // point the UI at an API hosted elsewhere.
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL || '/api').replace(/\/$/, '');
 
-const TOKEN_KEY = 'pro.session';
-
 export type FieldError = { field: string; message: string };
 
 export class ApiError extends Error {
@@ -60,38 +58,20 @@ function friendlyMessage(status: number, raw: string): string {
   return raw;
 }
 
-export type Session = { id: number; name: string; role: Role; email: string; token: string };
 export type Role = 'student' | 'faculty' | 'admin';
-
-export function readSession(): Session | null {
-  try {
-    const raw = localStorage.getItem(TOKEN_KEY);
-    return raw ? (JSON.parse(raw) as Session) : null;
-  } catch {
-    return null;
-  }
-}
-
-export function writeSession(s: Session | null) {
-  try {
-    if (s) localStorage.setItem(TOKEN_KEY, JSON.stringify(s));
-    else localStorage.removeItem(TOKEN_KEY);
-  } catch {
-    /* storage unavailable: session lives for this tab only */
-  }
-}
+/** The signed-in person: `id` is their Student_ID, Faculty_ID or Admin_ID. */
+export type Session = { id: number; name: string; role: Role; email: string };
 
 type Envelope<T> = { success: boolean; data?: T; error?: string; message?: string; details?: FieldError[] };
 
 export async function request<T = unknown>(method: string, path: string, body?: unknown): Promise<T> {
   const headers: Record<string, string> = { Accept: 'application/json' };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
-  const session = typeof window !== 'undefined' ? readSession() : null;
-  if (session?.token) headers.Authorization = `Bearer ${session.token}`;
 
   let res: Response;
   try {
-    res = await fetch(`${API_URL}${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
+    // The Better Auth session cookie rides along on same-origin requests.
+    res = await fetch(`${API_URL}${path}`, { method, headers, credentials: 'include', body: body === undefined ? undefined : JSON.stringify(body) });
   } catch {
     throw new ApiError(0, "Can't reach the server. Check your connection and that the app is running.");
   }

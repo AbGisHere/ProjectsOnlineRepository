@@ -48,7 +48,7 @@ export default function FacultyPage() {
       fields={[
         { name: 'faculty_id', label: 'Faculty ID', type: 'int', required: true, createOnly: true },
         { name: 'name', label: 'Full name', required: true, placeholder: 'Dr. …' },
-        { name: 'email', label: 'Email', type: 'email', required: true, wide: true },
+        { name: 'email', label: 'Email', type: 'email', required: true, wide: true, hint: 'Must be a @vit.ac.in address.' },
         { name: 'department_id', label: 'Department', type: 'select', required: true, options: depts.options },
         { name: 'designation', label: 'Designation', placeholder: 'Assistant Professor' },
         { name: 'score', label: 'Score', type: 'decimal', min: 0, max: 100 },

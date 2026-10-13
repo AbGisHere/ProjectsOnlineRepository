@@ -7,6 +7,48 @@ under a dated heading when you tag or submit a version.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-14
+
+### Added
+- **Better Auth sign-in for the web app**: email and password with cookie
+  sessions (7 days), mounted at `/api/auth/*`.
+  - `server/auth/oracleAdapter.ts`: a Better Auth database adapter for Oracle
+    (none exists upstream), built on `createAdapterFactory` and
+    node-oracledb.
+  - Four tables in `ddl.sql`: `auth_user`, `auth_session`, `auth_account`,
+    `auth_verification`. They're prefixed because `USER` and `SESSION` are
+    reserved in Oracle.
+  - Passwords use bcrypt, so the seed's existing hashes sign in unchanged.
+- **Email rules per role**: students must use `@vitstudent.ac.in`, faculty
+  `@vit.ac.in`, admins any address. Enforced on `POST /api/auth/register`,
+  `POST`/`PUT /api/students` and `POST`/`PUT /api/faculty`, and shown as
+  hints in the forms.
+- `/signup` page for students and faculty. It creates the Student/Faculty row
+  and the sign-in account, then signs the user in.
+- Seed data creates a sign-in account for every student, faculty member and
+  admin.
+
+### Changed
+- Sign-in is email + password; the role comes from the account, so the role
+  picker is gone. The login page shows which role an email will sign in as.
+- Seed emails now follow the rules: students `@vitstudent.ac.in`, faculty
+  `@vit.ac.in`. Admins keep `@vit.edu`. The Postman collection and
+  `curl-examples.md` use the new addresses.
+- `DELETE /api/students/:id` and `/api/faculty/:id` accept a signed-in session
+  or a Bearer JWT.
+- `POST /api/auth/register` also creates the web sign-in account, and editing
+  or deleting a student or faculty member updates or removes it.
+- The browser no longer keeps a JWT in localStorage; it uses the Better Auth
+  session cookie.
+- New environment variables: `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL`.
+
+### Kept
+- `POST /api/auth/login` still issues JWTs for API clients (Postman, curl).
+
+### Known gaps
+- Better Auth sign-in, sign-up and every write action have not yet been run
+  against a live Oracle database.
+
 ## [0.3.0] - 2026-10-14
 
 ### Changed

@@ -16,7 +16,8 @@ Changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 
 - Next.js 16 (App Router) + React 19 + TypeScript
 - Oracle DB (`oracledb` driver, thin mode, so no Oracle Instant Client is needed)
-- JWT auth (`jsonwebtoken`) + `bcryptjs` password hashing
+- [Better Auth](https://better-auth.com) for web sign-in (email + password, cookie sessions), through a custom Oracle adapter
+- JWT tokens (`jsonwebtoken`) for API clients such as Postman; `bcryptjs` password hashing for both
 - Request validation in `server/validate.ts` (same rules and `400` shape the
   Express version used)
 - Centralized error handling in `server/http.ts` + `server/errors.ts`
@@ -30,17 +31,24 @@ PRO-Project-Online-Repository/
 │   ├── api/                  # REST API: one route.ts per endpoint path
 │   ├── (app)/                # Signed-in pages: desk, projects, teams, students, …
 │   ├── login/                # Sign-in page
+│   ├── signup/               # Sign-up page (students and faculty)
 │   ├── layout.tsx            # Fonts, session + toast providers
 │   └── globals.css           # Design tokens and component styles
 ├── server/                   # Server-only code used by app/api
 │   ├── db.ts                 # Oracle connection pool + execute()
 │   ├── http.ts               # route() wrapper: parses input, maps errors to JSON
 │   ├── errors.ts             # ApiError + Oracle error → readable message
-│   ├── auth.ts               # JWT sign/verify, role guard
+│   ├── auth/
+│   │   ├── index.ts          # Better Auth config (tables, bcrypt, sign-up rules)
+│   │   ├── oracleAdapter.ts  # Better Auth database adapter for Oracle
+│   │   ├── accounts.ts       # Keeps auth_user/auth_account in step with Student/Faculty/Admin
+│   │   ├── guard.ts          # authenticate(): session cookie or Bearer JWT
+│   │   └── jwt.ts            # JWT sign/verify for API clients
 │   ├── validate.ts           # Request validation rules
 │   └── handlers/             # The SQL for each entity (auth, people, teams, projects, lookups)
 ├── components/               # Shelf, DataTable, EntityForm, CrudPage, TopBar, …
-├── lib/                      # Browser-side API client, session, types, role scope
+├── lib/                      # Browser-side API client, session, types, role scope,
+│                             # emailRules.ts (allowed email domains per role)
 ├── sql/
 │   ├── ddl.sql               # Table definitions (13 entities + Admin)
 │   └── seed.sql              # Sample data for the demo
@@ -81,7 +89,9 @@ Edit `.env` if your DB credentials or JWT secret differ from the defaults:
 DB_USER=system
 DB_PASSWORD=25BCE0014
 DB_CONNECT_STRING=localhost:1521/FREEPDB1
-JWT_SECRET=change_this_to_a_long_random_secret
+BETTER_AUTH_SECRET=change_this_to_a_long_random_secret
+BETTER_AUTH_URL=http://localhost:3001
+JWT_SECRET=change_this_to_a_different_long_random_secret
 ```
 
 ### 4. Create the schema
@@ -92,7 +102,9 @@ npm run ddl
 
 This drops (if present) and recreates all 14 tables (the 13 entities from the
 brief, plus a small `Admin` table needed for the Admin login role) with their
-PK/FK constraints.
+PK/FK constraints, plus Better Auth's four sign-in tables (`auth_user`,
+`auth_session`, `auth_account`, `auth_verification`). They're prefixed `auth_`
+because `USER` and `SESSION` are reserved words in Oracle.
 
 ### 5. Seed sample data
 
@@ -102,9 +114,16 @@ npm run seed
 
 Loads 5 departments, 18 students, 9 faculty, 2 admins, 6 teams (with
 members), 12 projects, 12 technologies, 8 domains, 6 categories, and 16
-evaluations. Every seeded Student/Faculty/Admin account has the password
-**`password123`** (bcrypt-hashed in the seed data) so you can log in
-immediately during the review.
+evaluations, plus a sign-in account for every student, faculty member and
+admin. Every seeded account has the password **`password123`**
+(bcrypt-hashed in the seed data) so you can log in immediately during the
+review. Demo logins:
+
+| Role | Email |
+|---|---|
+| Student | `aarav.sharma@vitstudent.ac.in` |
+| Faculty | `rakesh.kumar@vit.ac.in` |
+| Admin | `admin@vit.edu` |
 
 ### 6. Start the app
 
@@ -113,8 +132,9 @@ npm run dev      # development, http://localhost:3001
 npm run build && npm start   # production build
 ```
 
-Open `http://localhost:3001` and sign in with any seeded account. The login
-page has a one-click "fill in the demo login" for each role. The API answers
+Open `http://localhost:3001` and sign in with any seeded account (see the
+table above). The login page has a one-click "fill in the demo login" for
+each role, and new students and faculty can register at `/signup`. The API answers
 at `http://localhost:3001/api`; `GET /api` is a health check.
 
 ## Deploying to Vercel
@@ -134,8 +154,11 @@ The whole project is one Vercel deployment: pages and API together.
 4. **Import the repo into Vercel** (New Project → import from GitHub). The
    framework is detected as Next.js; keep the root directory as the repo root.
 5. **Set the environment variables** in the Vercel project: `DB_USER`,
-   `DB_PASSWORD`, `DB_CONNECT_STRING`, `JWT_SECRET` (a long random string),
-   and optionally `JWT_EXPIRES_IN`, `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
+   `DB_PASSWORD`, `DB_CONNECT_STRING`, `BETTER_AUTH_SECRET` and `JWT_SECRET`
+   (two different long random strings, e.g. `openssl rand -base64 32`), and
+   `BETTER_AUTH_URL` set to your production URL
+   (`https://<your-app>.vercel.app`). Optional: `JWT_EXPIRES_IN`,
+   `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
 6. **Deploy.** Open `https://<your-app>.vercel.app/api` to check the API, then
    sign in on the home page.
 
@@ -162,22 +185,48 @@ field, and Oracle errors are rewritten into plain sentences, so no raw
 `ORA-` text reaches the screen.
 
 **Testing status:** every screen has been checked on desktop (1440px) and
-mobile (390px) against the seed data, and the API's validation, auth and
-error responses have been checked without a database. Reads and writes
-against a live Oracle database have **not yet been run since the move to
-Next.js**. Check them once before the review.
+mobile (390px) against the seed data. The API's validation, email rules and
+error responses have been checked without a database. Reads, writes and
+Better Auth sign-in against a live Oracle database have **not yet been run**.
+Check them once before the review.
 
 ## Authentication
 
-- `POST /api/auth/register`: create a Student, Faculty, or Admin account.
-- `POST /api/auth/login`: returns a JWT. Include it as `Authorization: Bearer <token>`
-  on protected routes. Currently `DELETE /api/students/:id` and
-  `DELETE /api/faculty/:id` require a valid token; call `authenticate()` /
-  `requireRole()` from `server/auth.ts` in a handler to protect more routes.
+There are two ways to sign in, backed by the same accounts and passwords.
 
-Passwords are hashed with `bcryptjs` before storage; plaintext passwords are
-never stored or returned by any endpoint. `bcryptjs` reads the existing
-`$2b$` hashes in `seed.sql` unchanged.
+**Web app: Better Auth.** The pages sign in through
+[Better Auth](https://better-auth.com) with email and password, and stay
+signed in with a cookie session (7 days). Its endpoints live under
+`/api/auth/*` (for example `POST /api/auth/sign-in/email`,
+`POST /api/auth/sign-out`, `GET /api/auth/get-session`). Better Auth has no
+Oracle adapter, so `server/auth/oracleAdapter.ts` provides one.
+
+**API clients: JWT.** `POST /api/auth/login` returns a JWT for Postman, curl
+and other clients. Send it as `Authorization: Bearer <token>`.
+
+**Who can sign up, and with which email:**
+
+| Role | Email must be | How the account is created |
+|---|---|---|
+| Student | `@vitstudent.ac.in` | `/signup` page, `POST /api/auth/register`, or an admin adding them |
+| Faculty | `@vit.ac.in` | `/signup` page, `POST /api/auth/register`, or an admin adding them |
+| Admin | any address | `POST /api/auth/register` only (not on the sign-up page) |
+
+These rules live in `lib/emailRules.ts` and are enforced by every path that
+creates or edits a person: register, `POST`/`PUT /api/students`, and
+`POST`/`PUT /api/faculty`. A sign-in account always belongs to one Student,
+Faculty or Admin row. Better Auth refuses to create an account for an email
+that isn't on record, and deleting a student or faculty member deletes their
+account and sessions.
+
+Protected routes: `DELETE /api/students/:id` and `DELETE /api/faculty/:id`
+accept either a signed-in session or a Bearer token. To protect more routes,
+call `authenticate()` / `requireRole()` from `server/auth/guard.ts` in a
+handler.
+
+Passwords are hashed with bcrypt (`bcryptjs`) in both the person tables and
+Better Auth's `auth_account`, so the seed's hashes work for both sign-in
+paths. Plaintext passwords are never stored or returned by any endpoint.
 
 ## Endpoints
 

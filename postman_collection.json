@@ -20,7 +20,7 @@
             "url": "{{base_url}}/auth/register",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role\": \"student\",\n  \"id\": 1099,\n  \"name\": \"Test Student\",\n  \"email\": \"test.student@vit.edu\",\n  \"department_id\": 1,\n  \"year\": 3,\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"role\": \"student\",\n  \"id\": 1099,\n  \"name\": \"Test Student\",\n  \"email\": \"test.student@vitstudent.ac.in\",\n  \"department_id\": 1,\n  \"year\": 3,\n  \"password\": \"password123\"\n}"
             }
           }
         },
@@ -32,7 +32,7 @@
             "url": "{{base_url}}/auth/register",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role\": \"faculty\",\n  \"id\": 2099,\n  \"name\": \"Test Faculty\",\n  \"email\": \"test.faculty@vit.edu\",\n  \"department_id\": 1,\n  \"designation\": \"Assistant Professor\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"role\": \"faculty\",\n  \"id\": 2099,\n  \"name\": \"Test Faculty\",\n  \"email\": \"test.faculty@vit.ac.in\",\n  \"department_id\": 1,\n  \"designation\": \"Assistant Professor\",\n  \"password\": \"password123\"\n}"
             }
           }
         },
@@ -67,7 +67,7 @@
             "url": "{{base_url}}/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role\": \"student\",\n  \"email\": \"aarav.sharma@vit.edu\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"role\": \"student\",\n  \"email\": \"aarav.sharma@vitstudent.ac.in\",\n  \"password\": \"password123\"\n}"
             }
           },
           "description": "Sets {{token}} automatically for the DELETE routes below that require auth."
@@ -80,7 +80,7 @@
             "url": "{{base_url}}/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role\": \"faculty\",\n  \"email\": \"rakesh.kumar@vit.edu\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"role\": \"faculty\",\n  \"email\": \"rakesh.kumar@vit.ac.in\",\n  \"password\": \"password123\"\n}"
             }
           }
         },
@@ -138,7 +138,7 @@
             "url": "{{base_url}}/students",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"student_id\": 1099,\n  \"name\": \"New Student\",\n  \"email\": \"new.student@vit.edu\",\n  \"department_id\": 1,\n  \"year\": 2,\n  \"credits\": 60,\n  \"password\": \"password123\",\n  \"score\": 0\n}"
+              "raw": "{\n  \"student_id\": 1099,\n  \"name\": \"New Student\",\n  \"email\": \"new.student@vitstudent.ac.in\",\n  \"department_id\": 1,\n  \"year\": 2,\n  \"credits\": 60,\n  \"password\": \"password123\",\n  \"score\": 0\n}"
             }
           }
         },
@@ -150,7 +150,7 @@
             "url": "{{base_url}}/students/1099",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"New Student\",\n  \"email\": \"new.student@vit.edu\",\n  \"department_id\": 1,\n  \"year\": 3,\n  \"credits\": 90,\n  \"score\": 65\n}"
+              "raw": "{\n  \"name\": \"New Student\",\n  \"email\": \"new.student@vitstudent.ac.in\",\n  \"department_id\": 1,\n  \"year\": 3,\n  \"credits\": 90,\n  \"score\": 65\n}"
             }
           }
         },
@@ -178,7 +178,7 @@
             "url": "{{base_url}}/faculty",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"faculty_id\": 2099,\n  \"name\": \"New Faculty\",\n  \"email\": \"new.faculty@vit.edu\",\n  \"department_id\": 1,\n  \"designation\": \"Assistant Professor\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"faculty_id\": 2099,\n  \"name\": \"New Faculty\",\n  \"email\": \"new.faculty@vit.ac.in\",\n  \"department_id\": 1,\n  \"designation\": \"Assistant Professor\",\n  \"password\": \"password123\"\n}"
             }
           }
         },
@@ -190,7 +190,7 @@
             "url": "{{base_url}}/faculty/2099",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"New Faculty\",\n  \"email\": \"new.faculty@vit.edu\",\n  \"department_id\": 1,\n  \"designation\": \"Associate Professor\",\n  \"score\": 80\n}"
+              "raw": "{\n  \"name\": \"New Faculty\",\n  \"email\": \"new.faculty@vit.ac.in\",\n  \"department_id\": 1,\n  \"designation\": \"Associate Professor\",\n  \"score\": 80\n}"
             }
           }
         },

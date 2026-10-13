@@ -2,6 +2,9 @@
 -- Seed script with sample data for the demo. Run after ddl.sql.
 -- Run via: npm run seed   (see scripts/runSql.js)
 --
+-- Emails follow the sign-in rules: students @vitstudent.ac.in, faculty
+-- @vit.ac.in, admins any address.
+--
 -- NOTE: Student/Faculty/Admin passwords below are bcrypt hashes of "password123"
 -- so you can log in via POST /auth/login during the demo with that password.
 
@@ -17,37 +20,37 @@ INSERT INTO Department (Department_ID, Department_Name) VALUES (5, 'Mechanical E
 -- ===========================================================================
 -- Student (18)  -- password for all: password123
 -- ===========================================================================
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1001, 'Aarav Sharma', 'aarav.sharma@vit.edu', 1, 3, 120, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 85.5);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1002, 'Diya Patel', 'diya.patel@vit.edu', 1, 3, 118, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 90.0);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1003, 'Vihaan Reddy', 'vihaan.reddy@vit.edu', 2, 4, 145, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 78.25);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1004, 'Ananya Iyer', 'ananya.iyer@vit.edu', 2, 4, 150, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 92.75);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1005, 'Kabir Singh', 'kabir.singh@vit.edu', 1, 2, 80, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 70.0);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1006, 'Ishita Nair', 'ishita.nair@vit.edu', 3, 3, 110, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 88.0);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1007, 'Reyansh Gupta', 'reyansh.gupta@vit.edu', 3, 4, 140, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 81.5);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1008, 'Myra Joshi', 'myra.joshi@vit.edu', 4, 2, 82, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 76.0);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1009, 'Arjun Mehta', 'arjun.mehta@vit.edu', 4, 3, 115, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 83.0);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1010, 'Saanvi Rao', 'saanvi.rao@vit.edu', 5, 4, 148, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 94.5);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1011, 'Vivaan Kulkarni', 'vivaan.kulkarni@vit.edu', 5, 3, 112, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 79.0);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1012, 'Anika Desai', 'anika.desai@vit.edu', 1, 4, 150, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 96.0);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1013, 'Aditya Verma', 'aditya.verma@vit.edu', 2, 2, 78, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 72.5);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1014, 'Kiara Menon', 'kiara.menon@vit.edu', 3, 3, 108, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 87.25);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1015, 'Krishna Pillai', 'krishna.pillai@vit.edu', 4, 4, 142, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 80.0);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1016, 'Riya Choudhary', 'riya.choudhary@vit.edu', 5, 2, 84, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 75.5);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1017, 'Shaurya Bhatt', 'shaurya.bhatt@vit.edu', 1, 3, 116, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 82.75);
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1018, 'Prisha Agarwal', 'prisha.agarwal@vit.edu', 2, 3, 119, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 89.0);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1001, 'Aarav Sharma', 'aarav.sharma@vitstudent.ac.in', 1, 3, 120, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 85.5);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1002, 'Diya Patel', 'diya.patel@vitstudent.ac.in', 1, 3, 118, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 90.0);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1003, 'Vihaan Reddy', 'vihaan.reddy@vitstudent.ac.in', 2, 4, 145, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 78.25);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1004, 'Ananya Iyer', 'ananya.iyer@vitstudent.ac.in', 2, 4, 150, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 92.75);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1005, 'Kabir Singh', 'kabir.singh@vitstudent.ac.in', 1, 2, 80, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 70.0);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1006, 'Ishita Nair', 'ishita.nair@vitstudent.ac.in', 3, 3, 110, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 88.0);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1007, 'Reyansh Gupta', 'reyansh.gupta@vitstudent.ac.in', 3, 4, 140, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 81.5);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1008, 'Myra Joshi', 'myra.joshi@vitstudent.ac.in', 4, 2, 82, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 76.0);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1009, 'Arjun Mehta', 'arjun.mehta@vitstudent.ac.in', 4, 3, 115, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 83.0);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1010, 'Saanvi Rao', 'saanvi.rao@vitstudent.ac.in', 5, 4, 148, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 94.5);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1011, 'Vivaan Kulkarni', 'vivaan.kulkarni@vitstudent.ac.in', 5, 3, 112, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 79.0);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1012, 'Anika Desai', 'anika.desai@vitstudent.ac.in', 1, 4, 150, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 96.0);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1013, 'Aditya Verma', 'aditya.verma@vitstudent.ac.in', 2, 2, 78, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 72.5);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1014, 'Kiara Menon', 'kiara.menon@vitstudent.ac.in', 3, 3, 108, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 87.25);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1015, 'Krishna Pillai', 'krishna.pillai@vitstudent.ac.in', 4, 4, 142, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 80.0);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1016, 'Riya Choudhary', 'riya.choudhary@vitstudent.ac.in', 5, 2, 84, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 75.5);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1017, 'Shaurya Bhatt', 'shaurya.bhatt@vitstudent.ac.in', 1, 3, 116, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 82.75);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1018, 'Prisha Agarwal', 'prisha.agarwal@vitstudent.ac.in', 2, 3, 119, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 89.0);
 
 -- ===========================================================================
 -- Faculty (9)  -- password for all: password123
 -- ===========================================================================
-INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2001, 'Dr. Rakesh Kumar', 'rakesh.kumar@vit.edu', 1, 'Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 91.0);
-INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2002, 'Dr. Sunita Rao', 'sunita.rao@vit.edu', 1, 'Associate Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 88.5);
-INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2003, 'Dr. Manoj Trivedi', 'manoj.trivedi@vit.edu', 2, 'Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 90.0);
-INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2004, 'Dr. Priya Krishnan', 'priya.krishnan@vit.edu', 2, 'Assistant Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 85.0);
-INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2005, 'Dr. Alok Sinha', 'alok.sinha@vit.edu', 3, 'Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 93.5);
-INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2006, 'Dr. Meera Pillai', 'meera.pillai@vit.edu', 3, 'Associate Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 87.0);
-INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2007, 'Dr. Vikram Chauhan', 'vikram.chauhan@vit.edu', 4, 'Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 89.5);
-INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2008, 'Dr. Neha Bansal', 'neha.bansal@vit.edu', 5, 'Assistant Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 84.0);
-INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2009, 'Dr. Suresh Iyer', 'suresh.iyer@vit.edu', 5, 'Associate Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 86.5);
+INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2001, 'Dr. Rakesh Kumar', 'rakesh.kumar@vit.ac.in', 1, 'Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 91.0);
+INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2002, 'Dr. Sunita Rao', 'sunita.rao@vit.ac.in', 1, 'Associate Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 88.5);
+INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2003, 'Dr. Manoj Trivedi', 'manoj.trivedi@vit.ac.in', 2, 'Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 90.0);
+INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2004, 'Dr. Priya Krishnan', 'priya.krishnan@vit.ac.in', 2, 'Assistant Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 85.0);
+INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2005, 'Dr. Alok Sinha', 'alok.sinha@vit.ac.in', 3, 'Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 93.5);
+INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2006, 'Dr. Meera Pillai', 'meera.pillai@vit.ac.in', 3, 'Associate Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 87.0);
+INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2007, 'Dr. Vikram Chauhan', 'vikram.chauhan@vit.ac.in', 4, 'Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 89.5);
+INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2008, 'Dr. Neha Bansal', 'neha.bansal@vit.ac.in', 5, 'Assistant Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 84.0);
+INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2009, 'Dr. Suresh Iyer', 'suresh.iyer@vit.ac.in', 5, 'Associate Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 86.5);
 
 -- ===========================================================================
 -- Admin (2)  -- password for all: password123
@@ -236,5 +239,24 @@ INSERT INTO Evaluation (Evaluation_ID, Project_ID, Faculty_ID, Score, Feedback, 
 INSERT INTO Evaluation (Evaluation_ID, Project_ID, Faculty_ID, Score, Feedback, Evaluation_Date) VALUES (8014, 7011, 2002, 55, 'Pipeline fails under high concurrency, needs rework.', DATE '2026-03-10');
 INSERT INTO Evaluation (Evaluation_ID, Project_ID, Faculty_ID, Score, Feedback, Evaluation_Date) VALUES (8015, 7003, 2005, 70, 'Good progress, continue field testing.', DATE '2026-03-15');
 INSERT INTO Evaluation (Evaluation_ID, Project_ID, Faculty_ID, Score, Feedback, Evaluation_Date) VALUES (8016, 7005, 2002, 74, 'Good architecture, add more integration tests.', DATE '2026-03-20');
+
+-- ===========================================================================
+-- Better Auth sign-in accounts: one auth_user + credential auth_account per
+-- Student, Faculty and Admin, reusing the same bcrypt password hash so every
+-- seeded person signs in to the web app with password123.
+-- ===========================================================================
+INSERT INTO auth_user (id, name, email, email_verified, user_role, ref_id)
+  SELECT 'student-' || Student_ID, Name, Email, 1, 'student', Student_ID FROM Student;
+INSERT INTO auth_user (id, name, email, email_verified, user_role, ref_id)
+  SELECT 'faculty-' || Faculty_ID, Name, Email, 1, 'faculty', Faculty_ID FROM Faculty;
+INSERT INTO auth_user (id, name, email, email_verified, user_role, ref_id)
+  SELECT 'admin-' || Admin_ID, Name, Email, 1, 'admin', Admin_ID FROM Admin;
+
+INSERT INTO auth_account (id, account_id, provider_id, user_id, password)
+  SELECT 'acct-student-' || Student_ID, 'student-' || Student_ID, 'credential', 'student-' || Student_ID, Password FROM Student;
+INSERT INTO auth_account (id, account_id, provider_id, user_id, password)
+  SELECT 'acct-faculty-' || Faculty_ID, 'faculty-' || Faculty_ID, 'credential', 'faculty-' || Faculty_ID, Password FROM Faculty;
+INSERT INTO auth_account (id, account_id, provider_id, user_id, password)
+  SELECT 'acct-admin-' || Admin_ID, 'admin-' || Admin_ID, 'credential', 'admin-' || Admin_ID, Password FROM Admin;
 
 COMMIT;

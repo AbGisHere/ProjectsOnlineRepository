@@ -1,40 +1,47 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
-import { api, readSession, writeSession, type Role, type Session } from './api';
+import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react';
+import type { Role, Session } from './api';
+import { authClient } from './authClient';
 
 type Ctx = {
   session: Session | null;
   ready: boolean;
-  signIn: (role: Role, email: string, password: string) => Promise<Session>;
-  signOut: () => void;
+  signIn: (email: string, password: string) => Promise<Session>;
+  signOut: () => Promise<void>;
 };
 
 const SessionContext = createContext<Ctx | null>(null);
 
+type AuthUser = { name: string; email: string; role?: string; refId?: number | string };
+
+function toSession(u: AuthUser | null | undefined): Session | null {
+  if (!u?.role || u.refId === undefined) return null;
+  return { id: Number(u.refId), name: u.name, email: u.email, role: u.role as Role };
+}
+
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [ready, setReady] = useState(false);
+  const { data, isPending, refetch } = authClient.useSession();
+  const session = useMemo(() => toSession(data?.user as AuthUser | undefined), [data]);
 
-  useEffect(() => {
-    setSession(readSession());
-    setReady(true);
-  }, []);
+  const signIn = useCallback(
+    async (email: string, password: string) => {
+      const { data: res, error } = await authClient.signIn.email({ email, password });
+      if (error) throw new Error(error.message || 'Sign-in failed.');
+      await refetch();
+      const s = toSession(res?.user as AuthUser | undefined);
+      if (!s) throw new Error('This account is not linked to a student, faculty or admin record.');
+      return s;
+    },
+    [refetch]
+  );
 
-  const signIn = useCallback(async (role: Role, email: string, password: string) => {
-    const data = await api.post<Omit<Session, 'role'> & { role: Role }>('/auth/login', { role, email, password });
-    const s: Session = { id: Number(data.id), name: data.name, role: data.role, email: data.email, token: data.token };
-    writeSession(s);
-    setSession(s);
-    return s;
-  }, []);
+  const signOut = useCallback(async () => {
+    await authClient.signOut();
+    await refetch();
+  }, [refetch]);
 
-  const signOut = useCallback(() => {
-    writeSession(null);
-    setSession(null);
-  }, []);
-
-  return <SessionContext.Provider value={{ session, ready, signIn, signOut }}>{children}</SessionContext.Provider>;
+  return <SessionContext.Provider value={{ session, ready: !isPending, signIn, signOut }}>{children}</SessionContext.Provider>;
 }
 
 export function useSession() {

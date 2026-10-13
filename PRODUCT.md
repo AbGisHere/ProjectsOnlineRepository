@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-One Next.js app (user's choice) serves both the UI and the REST API (route handlers under `app/api/`), on Oracle DB via `oracledb` (thin mode), with JWT auth and bcryptjs. Deployed as one Vercel project against a free Oracle Autonomous Database; runs locally against Oracle in Docker. The API was moved from Express on 2026-10-14 so everything deploys once. See `README.md`.
+One Next.js app (user's choice) serves both the UI and the REST API (route handlers under `app/api/`), on Oracle DB via `oracledb` (thin mode), with Better Auth (email + password, cookie sessions, custom Oracle adapter) for the web app, JWT for API clients, and bcryptjs. Deployed as one Vercel project against a free Oracle Autonomous Database; runs locally against Oracle in Docker. The API was moved from Express on 2026-10-14 so everything deploys once. See `README.md`.
 
 ## Users
 
@@ -41,6 +41,7 @@ PRO is relational at its core. It links projects, teams, people, departments, te
 - **Hard deadline:** the build must be done tonight (2026-10-13) and will be submitted tomorrow (2026-10-14). Scope decisions should favour complete, working coverage over extra flourish.
 - **All 13 entities must be visible in the UI**, with CRUD where the API supports it: Department, Student, Faculty, Team, Team_Member, Project, Technology, Project_Technology, Domain, Project_Domain, Category, Project_Category and Evaluation. Admin is the extra login table.
 - The UI uses the existing `/api` endpoints (see `README.md` and `postman_collection.json`). Any new endpoint is an API change and must be called out.
+- Sign-in email rules: students `@vitstudent.ac.in`, faculty `@vit.ac.in`, admins any address (confirmed by the user 2026-10-14). Admins can't self-register on the sign-up page.
 - Validation errors come back as `400` with a `details` array per field. The UI must show these next to the relevant fields.
 - Known schema deviations, which are deliberate and documented: Faculty has a `Password` column, and there is an `Admin` table.
 

@@ -49,7 +49,7 @@ export default function StudentsPage() {
       fields={[
         { name: 'student_id', label: 'Student ID', type: 'int', required: true, createOnly: true },
         { name: 'name', label: 'Full name', required: true },
-        { name: 'email', label: 'Email', type: 'email', required: true, wide: true },
+        { name: 'email', label: 'Email', type: 'email', required: true, wide: true, hint: 'Must be a @vitstudent.ac.in address.' },
         { name: 'department_id', label: 'Department', type: 'select', required: true, options: depts.options },
         { name: 'year', label: 'Year of study', type: 'int', required: true, min: 1, max: 5 },
         { name: 'credits', label: 'Credits', type: 'int', min: 0 },

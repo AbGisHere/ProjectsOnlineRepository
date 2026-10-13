@@ -13,13 +13,13 @@ BASE=http://localhost:3001/api
 ```bash
 # Register a student
 curl -X POST $BASE/auth/register -H "Content-Type: application/json" -d '{
-  "role": "student", "id": 1099, "name": "Test Student", "email": "test.student@vit.edu",
+  "role": "student", "id": 1099, "name": "Test Student", "email": "test.student@vitstudent.ac.in",
   "department_id": 1, "year": 3, "password": "password123"
 }'
 
 # Register a faculty
 curl -X POST $BASE/auth/register -H "Content-Type: application/json" -d '{
-  "role": "faculty", "id": 2099, "name": "Test Faculty", "email": "test.faculty@vit.edu",
+  "role": "faculty", "id": 2099, "name": "Test Faculty", "email": "test.faculty@vit.ac.in",
   "department_id": 1, "designation": "Assistant Professor", "password": "password123"
 }'
 
@@ -31,7 +31,7 @@ curl -X POST $BASE/auth/register -H "Content-Type: application/json" -d '{
 
 # Login (seeded users all use password123)
 curl -X POST $BASE/auth/login -H "Content-Type: application/json" -d '{
-  "role": "student", "email": "aarav.sharma@vit.edu", "password": "password123"
+  "role": "student", "email": "aarav.sharma@vitstudent.ac.in", "password": "password123"
 }'
 # -> copy the "token" field from the response for the authenticated calls below
 TOKEN="paste-token-here"
@@ -54,11 +54,11 @@ curl $BASE/students
 curl $BASE/students/1001
 curl $BASE/students/1001/projects
 curl -X POST $BASE/students -H "Content-Type: application/json" -d '{
-  "student_id": 1099, "name": "New Student", "email": "new.student@vit.edu",
+  "student_id": 1099, "name": "New Student", "email": "new.student@vitstudent.ac.in",
   "department_id": 1, "year": 2, "credits": 60, "password": "password123", "score": 0
 }'
 curl -X PUT $BASE/students/1099 -H "Content-Type: application/json" -d '{
-  "name": "New Student", "email": "new.student@vit.edu", "department_id": 1, "year": 3, "credits": 90, "score": 65
+  "name": "New Student", "email": "new.student@vitstudent.ac.in", "department_id": 1, "year": 3, "credits": 90, "score": 65
 }'
 curl -X DELETE $BASE/students/1099 -H "Authorization: Bearer $TOKEN"
 ```
@@ -70,11 +70,11 @@ curl $BASE/faculty
 curl $BASE/faculty/2001
 curl $BASE/faculty/2001/guided-teams
 curl -X POST $BASE/faculty -H "Content-Type: application/json" -d '{
-  "faculty_id": 2099, "name": "New Faculty", "email": "new.faculty@vit.edu",
+  "faculty_id": 2099, "name": "New Faculty", "email": "new.faculty@vit.ac.in",
   "department_id": 1, "designation": "Assistant Professor", "password": "password123"
 }'
 curl -X PUT $BASE/faculty/2099 -H "Content-Type: application/json" -d '{
-  "name": "New Faculty", "email": "new.faculty@vit.edu", "department_id": 1, "designation": "Associate Professor", "score": 80
+  "name": "New Faculty", "email": "new.faculty@vit.ac.in", "department_id": 1, "designation": "Associate Professor", "score": 80
 }'
 curl -X DELETE $BASE/faculty/2099 -H "Authorization: Bearer $TOKEN"
 ```

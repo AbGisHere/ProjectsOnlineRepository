@@ -246,7 +246,7 @@ td .sub { display: block; color: var(--muted); font-size: 13px; margin-top: 1px;
 .search .input { padding-left: 34px; }
 .filter-select { width: auto; min-width: 150px; }
 
-.field { display: grid; gap: 6px; }
+.field { display: grid; gap: 6px; align-content: start; }
 .field label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
 .field .req { color: var(--danger); margin-left: 2px; }
 .field .hint { font-size: 12.5px; color: var(--muted); }
@@ -392,7 +392,7 @@ td .sub { display: block; color: var(--muted); font-size: 13px; margin-top: 1px;
 
 /* ───────── Login ───────── */
 .login { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(420px, 0.9fr); }
-.login-cloth { background: var(--cloth); color: var(--cloth-ink); padding: 48px 56px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+.login-cloth { background: var(--cloth); color: var(--cloth-ink); padding: 48px 56px; display: flex; flex-direction: column; gap: 28px; justify-content: space-between; position: relative; overflow: hidden; }
 .login-cloth .wordmark b { font-size: 44px; }
 .login-cloth h1 { font-family: var(--font-foil); font-weight: 400; color: var(--foil); font-size: 52px; line-height: 1.08; max-width: 14ch; letter-spacing: -0.005em; }
 .login-cloth p { color: var(--cloth-ink-muted); max-width: 46ch; font-size: 16px; margin-top: 18px; line-height: 1.6; }
