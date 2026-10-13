@@ -10,11 +10,12 @@ import { roleForEmail } from '@/lib/emailRules';
 import { ROLE_LABEL, useSession } from '@/lib/session';
 import type { Role } from '@/lib/api';
 
-// Seeded accounts from sql/seed.sql (all use password123, per the README).
-const DEMO: Record<Role, { email: string; who: string }> = {
-  student: { email: 'aarav.sharma@vitstudent.ac.in', who: 'Aarav Sharma, leader of Byte Busters' },
+// Seeded demo accounts from sql/seed.sql (password123, per the README).
+// The admin is a real person's account, so it has no demo shortcut.
+type DemoRole = Exclude<Role, 'admin'>;
+const DEMO: Record<DemoRole, { email: string; who: string }> = {
+  student: { email: 'student@vitstudent.ac.in', who: 'Aarav Sharma, leader of Byte Busters' },
   faculty: { email: 'rakesh.kumar@vit.ac.in', who: 'Dr. Rakesh Kumar, CSE' },
-  admin: { email: 'admin@vit.edu', who: 'System Admin' },
 };
 
 export default function LoginPage() {
@@ -53,7 +54,7 @@ export default function LoginPage() {
     }
   }
 
-  function fillDemo(r: Role) {
+  function fillDemo(r: DemoRole) {
     setEmail(DEMO[r].email);
     setPassword('password123');
     setFieldErr({});
@@ -99,14 +100,9 @@ export default function LoginPage() {
           </p>
 
           <div className="demo">
-            Reviewing the demo? Seeded accounts use the password <span className="num">password123</span>. Fill in the{' '}
-            {(['student', 'faculty', 'admin'] as Role[]).map((r, i) => (
-              <span key={r}>
-                {i > 0 && (i === 2 ? ' or ' : ', ')}
-                <button type="button" onClick={() => fillDemo(r)} title={DEMO[r].who}>{r}</button>
-              </span>
-            ))}{' '}
-            login.
+            Reviewing the demo? Fill in the{' '}
+            <button type="button" onClick={() => fillDemo('student')} title={DEMO.student.who}>student</button> or{' '}
+            <button type="button" onClick={() => fillDemo('faculty')} title={DEMO.faculty.who}>faculty</button> demo login.
           </div>
         </form>
       </div>

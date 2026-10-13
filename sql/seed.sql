@@ -20,7 +20,7 @@ INSERT INTO Department (Department_ID, Department_Name) VALUES (5, 'Mechanical E
 -- ===========================================================================
 -- Student (18)  -- password for all: password123
 -- ===========================================================================
-INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1001, 'Aarav Sharma', 'aarav.sharma@vitstudent.ac.in', 1, 3, 120, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 85.5);
+INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1001, 'Aarav Sharma', 'student@vitstudent.ac.in', 1, 3, 120, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 85.5);
 INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1002, 'Diya Patel', 'diya.patel@vitstudent.ac.in', 1, 3, 118, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 90.0);
 INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1003, 'Vihaan Reddy', 'vihaan.reddy@vitstudent.ac.in', 2, 4, 145, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 78.25);
 INSERT INTO Student (Student_ID, Name, Email, Department_ID, Year, Credits, Password, Score) VALUES (1004, 'Ananya Iyer', 'ananya.iyer@vitstudent.ac.in', 2, 4, 150, '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 92.75);
@@ -53,10 +53,10 @@ INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Passwo
 INSERT INTO Faculty (Faculty_ID, Name, Email, Department_ID, Designation, Password, Score) VALUES (2009, 'Dr. Suresh Iyer', 'suresh.iyer@vit.ac.in', 5, 'Associate Professor', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW', 86.5);
 
 -- ===========================================================================
--- Admin (2)  -- password for all: password123
+-- Admin (1): the only admin for now. Seeded with password123 so the first
+-- sign-in works; change it right away with: npm run set-password -- abg.592006@gmail.com
 -- ===========================================================================
-INSERT INTO Admin (Admin_ID, Name, Email, Password) VALUES (1, 'System Admin', 'admin@vit.edu', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW');
-INSERT INTO Admin (Admin_ID, Name, Email, Password) VALUES (2, 'Placement Cell Admin', 'placement.admin@vit.edu', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW');
+INSERT INTO Admin (Admin_ID, Name, Email, Password) VALUES (1, 'Abhinav Gupta', 'abg.592006@gmail.com', '$2b$10$nTb2rikYXmTRxduyYslmUukfD8b4A4ktOj3SrUnivosAGDJStRMdW');
 
 -- ===========================================================================
 -- Team (6) -- Leader must be Student, Guide must be Faculty

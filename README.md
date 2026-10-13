@@ -112,7 +112,7 @@ because `USER` and `SESSION` are reserved words in Oracle.
 npm run seed
 ```
 
-Loads 5 departments, 18 students, 9 faculty, 2 admins, 6 teams (with
+Loads 5 departments, 18 students, 9 faculty, 1 admin, 6 teams (with
 members), 12 projects, 12 technologies, 8 domains, 6 categories, and 16
 evaluations, plus a sign-in account for every student, faculty member and
 admin. Every seeded account has the password **`password123`**
@@ -121,9 +121,20 @@ review. Demo logins:
 
 | Role | Email |
 |---|---|
-| Student | `aarav.sharma@vitstudent.ac.in` |
+| Student | `student@vitstudent.ac.in` |
 | Faculty | `rakesh.kumar@vit.ac.in` |
-| Admin | `admin@vit.edu` |
+| Admin | `abg.592006@gmail.com` (the only admin; see below) |
+
+**Set the admin password right after seeding.** The admin is a real account,
+so don't leave it on the shared demo password:
+
+```bash
+npm run set-password -- abg.592006@gmail.com
+```
+
+The script asks for the new password at a hidden prompt (at least 8
+characters), updates both the `Admin` row and the Better Auth account, and
+signs out any existing sessions. It works for any account's email.
 
 ### 6. Start the app
 
@@ -133,8 +144,9 @@ npm run build && npm start   # production build
 ```
 
 Open `http://localhost:3001` and sign in with any seeded account (see the
-table above). The login page has a one-click "fill in the demo login" for
-each role, and new students and faculty can register at `/signup`. The API answers
+table above). The login page has one-click demo logins for the student and
+faculty accounts (not the admin), and new students and faculty can register
+at `/signup`. The API answers
 at `http://localhost:3001/api`; `GET /api` is a health check.
 
 ## Deploying to Vercel
@@ -153,13 +165,15 @@ The whole project is one Vercel deployment: pages and API together.
    run `npm run ddl` and `npm run seed`.
 4. **Import the repo into Vercel** (New Project → import from GitHub). The
    framework is detected as Next.js; keep the root directory as the repo root.
-5. **Set the environment variables** in the Vercel project: `DB_USER`,
+5. **Set your admin password** against the cloud database:
+   `npm run set-password -- abg.592006@gmail.com`.
+6. **Set the environment variables** in the Vercel project: `DB_USER`,
    `DB_PASSWORD`, `DB_CONNECT_STRING`, `BETTER_AUTH_SECRET` and `JWT_SECRET`
    (two different long random strings, e.g. `openssl rand -base64 32`), and
    `BETTER_AUTH_URL` set to your production URL
    (`https://<your-app>.vercel.app`). Optional: `JWT_EXPIRES_IN`,
    `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
-6. **Deploy.** Open `https://<your-app>.vercel.app/api` to check the API, then
+7. **Deploy.** Open `https://<your-app>.vercel.app/api` to check the API, then
    sign in on the home page.
 
 ## What's in the app
@@ -210,7 +224,11 @@ and other clients. Send it as `Authorization: Bearer <token>`.
 |---|---|---|
 | Student | `@vitstudent.ac.in` | `/signup` page, `POST /api/auth/register`, or an admin adding them |
 | Faculty | `@vit.ac.in` | `/signup` page, `POST /api/auth/register`, or an admin adding them |
-| Admin | any address | `POST /api/auth/register` only (not on the sign-up page) |
+| Admin | any address | `POST /api/auth/register` by a signed-in **admin** only |
+
+The only admin right now is `abg.592006@gmail.com`. Anyone can register as a
+student or faculty member, but creating an admin requires an admin session
+or admin Bearer token.
 
 These rules live in `lib/emailRules.ts` and are enforced by every path that
 creates or edits a person: register, `POST`/`PUT /api/students`, and

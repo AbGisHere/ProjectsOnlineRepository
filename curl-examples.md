@@ -23,16 +23,18 @@ curl -X POST $BASE/auth/register -H "Content-Type: application/json" -d '{
   "department_id": 1, "designation": "Assistant Professor", "password": "password123"
 }'
 
-# Register an admin
-curl -X POST $BASE/auth/register -H "Content-Type: application/json" -d '{
-  "role": "admin", "id": 99, "name": "Test Admin", "email": "test.admin@vit.edu",
-  "password": "password123"
+# Register an admin: only an existing admin can do this. Log in as the admin
+# first (see below) and use that token.
+curl -X POST $BASE/auth/register -H "Content-Type: application/json" -H "Authorization: Bearer $ADMIN_TOKEN" -d '{
+  "role": "admin", "id": 99, "name": "Second Admin", "email": "second.admin@example.com",
+  "password": "a-strong-password"
 }'
 
-# Login (seeded users all use password123)
+# Login (seeded students and faculty use password123)
 curl -X POST $BASE/auth/login -H "Content-Type: application/json" -d '{
-  "role": "student", "email": "aarav.sharma@vitstudent.ac.in", "password": "password123"
+  "role": "student", "email": "student@vitstudent.ac.in", "password": "password123"
 }'
+# Admin login uses the password you set with: npm run set-password -- abg.592006@gmail.com
 # -> copy the "token" field from the response for the authenticated calls below
 TOKEN="paste-token-here"
 ```

@@ -9,7 +9,8 @@
     "start": "next start -p 3001",
     "typecheck": "tsc --noEmit",
     "ddl": "node scripts/runSql.js sql/ddl.sql",
-    "seed": "node scripts/runSql.js sql/seed.sql"
+    "seed": "node scripts/runSql.js sql/seed.sql",
+    "set-password": "node scripts/setPassword.js"
   },
   "keywords": [
     "nextjs",

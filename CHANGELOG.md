@@ -7,6 +7,24 @@ under a dated heading when you tag or submit a version.
 
 ## [Unreleased]
 
+### Changed
+- Demo student login is now `student@vitstudent.ac.in` (Aarav Sharma, #1001).
+  Faculty stays `rakesh.kumar@vit.ac.in`.
+- **One admin: `abg.592006@gmail.com`**, replacing the two seeded demo
+  admins. It signs in through Better Auth like everyone else.
+- The login page no longer offers a one-click admin login.
+
+### Added
+- `npm run set-password -- <email>`: sets a new password (hidden prompt) for
+  any account in both the person table and Better Auth, and signs out its
+  sessions. Use it on the admin account right after seeding.
+
+### Security
+- `POST /api/auth/register` with `role: "admin"` now requires a signed-in
+  admin (session or Bearer token). Before this, anyone could create an admin
+  account. The Postman collection's "Register Admin" request now sends
+  `{{admin_token}}` from "Login (Admin)".
+
 ## [0.4.0] - 2026-10-14
 
 ### Added

@@ -34,14 +34,14 @@ PRO is relational at its core. It links projects, teams, people, departments, te
 - A team has one student leader and one faculty guide. Members are linked through `Team_Member`.
 - Search is `GET /projects/search?title=&domain=&department=&technology=&year=`. Aggregate scores come from `/projects/:id/average-score` (count, avg, min, max).
 - Login is `POST /auth/login`, which returns a JWT for the Student, Faculty or Admin role. For now only the student and faculty DELETE routes require the token.
-- Seed data: 5 departments, 18 students, 9 faculty, 2 admins, 6 teams, 12 projects, 12 technologies, 8 domains, 6 categories and 16 evaluations. Every account's password is `password123`.
+- Seed data: 5 departments, 18 students, 9 faculty, 1 admin, 6 teams, 12 projects, 12 technologies, 8 domains, 6 categories and 16 evaluations. Student and faculty demo passwords are `password123`; the admin sets their own with `npm run set-password`.
 
 ## Capabilities and Constraints
 
 - **Hard deadline:** the build must be done tonight (2026-10-13) and will be submitted tomorrow (2026-10-14). Scope decisions should favour complete, working coverage over extra flourish.
 - **All 13 entities must be visible in the UI**, with CRUD where the API supports it: Department, Student, Faculty, Team, Team_Member, Project, Technology, Project_Technology, Domain, Project_Domain, Category, Project_Category and Evaluation. Admin is the extra login table.
 - The UI uses the existing `/api` endpoints (see `README.md` and `postman_collection.json`). Any new endpoint is an API change and must be called out.
-- Sign-in email rules: students `@vitstudent.ac.in`, faculty `@vit.ac.in`, admins any address (confirmed by the user 2026-10-14). Admins can't self-register on the sign-up page.
+- Sign-in email rules: students `@vitstudent.ac.in`, faculty `@vit.ac.in`, admins any address (confirmed by the user 2026-10-14). The only admin is abg.592006@gmail.com (the user, 2026-10-14); only an existing admin can create another admin. Demo logins: student@vitstudent.ac.in and rakesh.kumar@vit.ac.in.
 - Validation errors come back as `400` with a `details` array per field. The UI must show these next to the relevant fields.
 - Known schema deviations, which are deliberate and documented: Faculty has a `Password` column, and there is an `Admin` table.
 

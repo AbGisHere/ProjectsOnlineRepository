@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { signToken, type Role } from '../auth/jwt';
 import { execute } from '../db';
 import { createAuthAccount } from '../auth/accounts';
+import { authenticate, requireRole } from '../auth/guard';
 import { ApiError } from '../errors';
 import { checkEmailRule } from '../emailCheck';
 import { ok, route } from '../http';
@@ -20,7 +21,7 @@ const ROLE_CONFIG: Record<Role, { table: string; idCol: string }> = {
 // POST /api/auth/register: creates the Student/Faculty/Admin row and its web
 // sign-in account, and returns a JWT for API clients.
 // body: { role, id, name, email, password, department_id?, year?, designation? }
-export const register = route(async ({ body }) => {
+export const register = route(async ({ req, body }) => {
   check(body, {
     role: [isIn(ROLES)],
     id: [isInt()],
@@ -31,6 +32,8 @@ export const register = route(async ({ body }) => {
     year: [when((b) => b.role === 'student', [isInt({ min: 1, max: 5 })], 'year is required for student (1-5)')],
   });
   const { role, id, name, email, password, department_id, year, designation } = body as Record<string, never>;
+  // Students and faculty may self-register; only a signed-in admin can add an admin.
+  if (role === 'admin') requireRole(await authenticate(req), 'admin');
   checkEmailRule(role, email);
   const hashed = await bcrypt.hash(String(password), SALT_ROUNDS);
   const { table, idCol } = ROLE_CONFIG[role as Role];

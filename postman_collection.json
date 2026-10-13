@@ -5,8 +5,18 @@
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "base_url", "value": "http://localhost:3001/api" },
-    { "key": "token", "value": "" }
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    }
   ],
   "item": [
     {
@@ -16,7 +26,12 @@
           "name": "Register Student",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/auth/register",
             "body": {
               "mode": "raw",
@@ -28,7 +43,12 @@
           "name": "Register Faculty",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/auth/register",
             "body": {
               "mode": "raw",
@@ -40,13 +60,23 @@
           "name": "Register Admin",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
             "url": "{{base_url}}/auth/register",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role\": \"admin\",\n  \"id\": 99,\n  \"name\": \"Test Admin\",\n  \"email\": \"test.admin@vit.edu\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"role\": \"admin\",\n  \"id\": 99,\n  \"name\": \"Test Admin\",\n  \"email\": \"second.admin@example.com\",\n  \"password\": \"password123\"\n}"
             }
-          }
+          },
+          "description": "Only an admin can add another admin: run \"Login (Admin)\" first, which sets {{admin_token}}."
         },
         {
           "name": "Login (Student)",
@@ -63,11 +93,16 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role\": \"student\",\n  \"email\": \"aarav.sharma@vitstudent.ac.in\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"role\": \"student\",\n  \"email\": \"student@vitstudent.ac.in\",\n  \"password\": \"password123\"\n}"
             }
           },
           "description": "Sets {{token}} automatically for the DELETE routes below that require auth."
@@ -76,7 +111,12 @@
           "name": "Login (Faculty)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/auth/login",
             "body": {
               "mode": "raw",
@@ -88,53 +128,127 @@
           "name": "Login (Admin)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/auth/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role\": \"admin\",\n  \"email\": \"admin@vit.edu\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"role\": \"admin\",\n  \"email\": \"abg.592006@gmail.com\",\n  \"password\": \"<your admin password>\"\n}"
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.success) { pm.collectionVariables.set('admin_token', data.data.token); }"
+                ]
+              }
+            }
+          ],
+          "description": "Sets {{admin_token}}, used by \"Register Admin\". The admin password is set with `npm run set-password`."
         }
       ]
     },
     {
       "name": "Department",
       "item": [
-        { "name": "List all", "request": { "method": "GET", "url": "{{base_url}}/departments" } },
-        { "name": "Get one", "request": { "method": "GET", "url": "{{base_url}}/departments/1" } },
+        {
+          "name": "List all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/departments"
+          }
+        },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/departments/1"
+          }
+        },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/departments",
-            "body": { "mode": "raw", "raw": "{\n  \"department_id\": 6,\n  \"department_name\": \"Chemical Engineering\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"department_id\": 6,\n  \"department_name\": \"Chemical Engineering\"\n}"
+            }
           }
         },
         {
           "name": "Update",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/departments/6",
-            "body": { "mode": "raw", "raw": "{\n  \"department_name\": \"Chemical Engg.\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"department_name\": \"Chemical Engg.\"\n}"
+            }
           }
         },
-        { "name": "Delete", "request": { "method": "DELETE", "url": "{{base_url}}/departments/6" } }
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/departments/6"
+          }
+        }
       ]
     },
     {
       "name": "Student",
       "item": [
-        { "name": "List all", "request": { "method": "GET", "url": "{{base_url}}/students" } },
-        { "name": "Get one", "request": { "method": "GET", "url": "{{base_url}}/students/1001" } },
-        { "name": "Project history", "request": { "method": "GET", "url": "{{base_url}}/students/1001/projects" } },
+        {
+          "name": "List all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/students"
+          }
+        },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/students/1001"
+          }
+        },
+        {
+          "name": "Project history",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/students/1001/projects"
+          }
+        },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/students",
             "body": {
               "mode": "raw",
@@ -146,7 +260,12 @@
           "name": "Update",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/students/1099",
             "body": {
               "mode": "raw",
@@ -158,7 +277,12 @@
           "name": "Delete (auth required)",
           "request": {
             "method": "DELETE",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": "{{base_url}}/students/1099"
           }
         }
@@ -167,14 +291,37 @@
     {
       "name": "Faculty",
       "item": [
-        { "name": "List all", "request": { "method": "GET", "url": "{{base_url}}/faculty" } },
-        { "name": "Get one", "request": { "method": "GET", "url": "{{base_url}}/faculty/2001" } },
-        { "name": "Guided teams", "request": { "method": "GET", "url": "{{base_url}}/faculty/2001/guided-teams" } },
+        {
+          "name": "List all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/faculty"
+          }
+        },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/faculty/2001"
+          }
+        },
+        {
+          "name": "Guided teams",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/faculty/2001/guided-teams"
+          }
+        },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/faculty",
             "body": {
               "mode": "raw",
@@ -186,7 +333,12 @@
           "name": "Update",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/faculty/2099",
             "body": {
               "mode": "raw",
@@ -198,7 +350,12 @@
           "name": "Delete (auth required)",
           "request": {
             "method": "DELETE",
-            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": "{{base_url}}/faculty/2099"
           }
         }
@@ -207,13 +364,30 @@
     {
       "name": "Team",
       "item": [
-        { "name": "List all", "request": { "method": "GET", "url": "{{base_url}}/teams" } },
-        { "name": "Get one", "request": { "method": "GET", "url": "{{base_url}}/teams/3001" } },
+        {
+          "name": "List all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/teams"
+          }
+        },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/teams/3001"
+          }
+        },
         {
           "name": "Create (validates leader/guide)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/teams",
             "body": {
               "mode": "raw",
@@ -225,56 +399,145 @@
           "name": "Update",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/teams/3099",
-            "body": { "mode": "raw", "raw": "{\n  \"team_name\": \"Renamed Squad\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"team_name\": \"Renamed Squad\"\n}"
+            }
           }
         },
-        { "name": "Delete", "request": { "method": "DELETE", "url": "{{base_url}}/teams/3099" } },
-        { "name": "List members", "request": { "method": "GET", "url": "{{base_url}}/teams/3001/members" } },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/teams/3099"
+          }
+        },
+        {
+          "name": "List members",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/teams/3001/members"
+          }
+        },
         {
           "name": "Add member",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/teams/3001/members",
-            "body": { "mode": "raw", "raw": "{\n  \"student_id\": 1013\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_id\": 1013\n}"
+            }
           }
         },
-        { "name": "Remove member", "request": { "method": "DELETE", "url": "{{base_url}}/teams/3001/members/1013" } },
-        { "name": "All Team_Member rows", "request": { "method": "GET", "url": "{{base_url}}/team-members" } }
+        {
+          "name": "Remove member",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/teams/3001/members/1013"
+          }
+        },
+        {
+          "name": "All Team_Member rows",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/team-members"
+          }
+        }
       ]
     },
     {
       "name": "Project",
       "item": [
-        { "name": "List all", "request": { "method": "GET", "url": "{{base_url}}/projects" } },
+        {
+          "name": "List all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/projects"
+          }
+        },
         {
           "name": "Search (filters)",
           "request": {
             "method": "GET",
             "url": {
               "raw": "{{base_url}}/projects/search?title=smart&domain=AI&department=Computer&technology=Python&year=2025-2026",
-              "host": ["{{base_url}}"],
-              "path": ["projects", "search"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "search"
+              ],
               "query": [
-                { "key": "title", "value": "smart" },
-                { "key": "domain", "value": "AI" },
-                { "key": "department", "value": "Computer" },
-                { "key": "technology", "value": "Python" },
-                { "key": "year", "value": "2025-2026" }
+                {
+                  "key": "title",
+                  "value": "smart"
+                },
+                {
+                  "key": "domain",
+                  "value": "AI"
+                },
+                {
+                  "key": "department",
+                  "value": "Computer"
+                },
+                {
+                  "key": "technology",
+                  "value": "Python"
+                },
+                {
+                  "key": "year",
+                  "value": "2025-2026"
+                }
               ]
             }
           }
         },
-        { "name": "Get one", "request": { "method": "GET", "url": "{{base_url}}/projects/7001" } },
-        { "name": "Evaluations for project", "request": { "method": "GET", "url": "{{base_url}}/projects/7001/evaluations" } },
-        { "name": "Average score", "request": { "method": "GET", "url": "{{base_url}}/projects/7001/average-score" } },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/projects/7001"
+          }
+        },
+        {
+          "name": "Evaluations for project",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/projects/7001/evaluations"
+          }
+        },
+        {
+          "name": "Average score",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/projects/7001/average-score"
+          }
+        },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/projects",
             "body": {
               "mode": "raw",
@@ -286,7 +549,12 @@
           "name": "Update",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/projects/7099",
             "body": {
               "mode": "raw",
@@ -294,133 +562,336 @@
             }
           }
         },
-        { "name": "Delete", "request": { "method": "DELETE", "url": "{{base_url}}/projects/7099" } },
-        { "name": "Technologies of project", "request": { "method": "GET", "url": "{{base_url}}/projects/7001/technologies" } },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/projects/7099"
+          }
+        },
+        {
+          "name": "Technologies of project",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/projects/7001/technologies"
+          }
+        },
         {
           "name": "Link technology",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/projects/7001/technologies",
-            "body": { "mode": "raw", "raw": "{\n  \"technology_id\": 4001\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technology_id\": 4001\n}"
+            }
           }
         },
-        { "name": "Unlink technology", "request": { "method": "DELETE", "url": "{{base_url}}/projects/7001/technologies/4001" } },
-        { "name": "Domains of project", "request": { "method": "GET", "url": "{{base_url}}/projects/7001/domains" } },
+        {
+          "name": "Unlink technology",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/projects/7001/technologies/4001"
+          }
+        },
+        {
+          "name": "Domains of project",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/projects/7001/domains"
+          }
+        },
         {
           "name": "Link domain",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/projects/7001/domains",
-            "body": { "mode": "raw", "raw": "{\n  \"domain_id\": 5002\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"domain_id\": 5002\n}"
+            }
           }
         },
-        { "name": "Unlink domain", "request": { "method": "DELETE", "url": "{{base_url}}/projects/7001/domains/5002" } },
-        { "name": "Categories of project", "request": { "method": "GET", "url": "{{base_url}}/projects/7001/categories" } },
+        {
+          "name": "Unlink domain",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/projects/7001/domains/5002"
+          }
+        },
+        {
+          "name": "Categories of project",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/projects/7001/categories"
+          }
+        },
         {
           "name": "Link category",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/projects/7001/categories",
-            "body": { "mode": "raw", "raw": "{\n  \"category_id\": 6003\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": 6003\n}"
+            }
           }
         },
-        { "name": "Unlink category", "request": { "method": "DELETE", "url": "{{base_url}}/projects/7001/categories/6003" } }
+        {
+          "name": "Unlink category",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/projects/7001/categories/6003"
+          }
+        }
       ]
     },
     {
       "name": "Technology",
       "item": [
-        { "name": "List all", "request": { "method": "GET", "url": "{{base_url}}/technologies" } },
-        { "name": "Get one", "request": { "method": "GET", "url": "{{base_url}}/technologies/4001" } },
+        {
+          "name": "List all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/technologies"
+          }
+        },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/technologies/4001"
+          }
+        },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/technologies",
-            "body": { "mode": "raw", "raw": "{\n  \"technology_id\": 4099,\n  \"technology_name\": \"Rust\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technology_id\": 4099,\n  \"technology_name\": \"Rust\"\n}"
+            }
           }
         },
         {
           "name": "Update",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/technologies/4099",
-            "body": { "mode": "raw", "raw": "{\n  \"technology_name\": \"Rust Lang\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technology_name\": \"Rust Lang\"\n}"
+            }
           }
         },
-        { "name": "Delete", "request": { "method": "DELETE", "url": "{{base_url}}/technologies/4099" } },
-        { "name": "All Project_Technology links", "request": { "method": "GET", "url": "{{base_url}}/technologies/links/all" } }
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/technologies/4099"
+          }
+        },
+        {
+          "name": "All Project_Technology links",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/technologies/links/all"
+          }
+        }
       ]
     },
     {
       "name": "Domain",
       "item": [
-        { "name": "List all", "request": { "method": "GET", "url": "{{base_url}}/domains" } },
-        { "name": "Get one", "request": { "method": "GET", "url": "{{base_url}}/domains/5001" } },
+        {
+          "name": "List all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/domains"
+          }
+        },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/domains/5001"
+          }
+        },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/domains",
-            "body": { "mode": "raw", "raw": "{\n  \"domain_id\": 5099,\n  \"domain_name\": \"AR/VR\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"domain_id\": 5099,\n  \"domain_name\": \"AR/VR\"\n}"
+            }
           }
         },
         {
           "name": "Update",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/domains/5099",
-            "body": { "mode": "raw", "raw": "{\n  \"domain_name\": \"Extended Reality\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"domain_name\": \"Extended Reality\"\n}"
+            }
           }
         },
-        { "name": "Delete", "request": { "method": "DELETE", "url": "{{base_url}}/domains/5099" } },
-        { "name": "All Project_Domain links", "request": { "method": "GET", "url": "{{base_url}}/domains/links/all" } }
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/domains/5099"
+          }
+        },
+        {
+          "name": "All Project_Domain links",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/domains/links/all"
+          }
+        }
       ]
     },
     {
       "name": "Category",
       "item": [
-        { "name": "List all", "request": { "method": "GET", "url": "{{base_url}}/categories" } },
-        { "name": "Get one", "request": { "method": "GET", "url": "{{base_url}}/categories/6001" } },
+        {
+          "name": "List all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/categories"
+          }
+        },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/categories/6001"
+          }
+        },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/categories",
-            "body": { "mode": "raw", "raw": "{\n  \"category_id\": 6099,\n  \"category_name\": \"Startup\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": 6099,\n  \"category_name\": \"Startup\"\n}"
+            }
           }
         },
         {
           "name": "Update",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/categories/6099",
-            "body": { "mode": "raw", "raw": "{\n  \"category_name\": \"Startup Idea\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_name\": \"Startup Idea\"\n}"
+            }
           }
         },
-        { "name": "Delete", "request": { "method": "DELETE", "url": "{{base_url}}/categories/6099" } },
-        { "name": "All Project_Category links", "request": { "method": "GET", "url": "{{base_url}}/categories/links/all" } }
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/categories/6099"
+          }
+        },
+        {
+          "name": "All Project_Category links",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/categories/links/all"
+          }
+        }
       ]
     },
     {
       "name": "Evaluation",
       "item": [
-        { "name": "List all", "request": { "method": "GET", "url": "{{base_url}}/evaluations" } },
-        { "name": "Get one", "request": { "method": "GET", "url": "{{base_url}}/evaluations/8001" } },
+        {
+          "name": "List all",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/evaluations"
+          }
+        },
+        {
+          "name": "Get one",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/evaluations/8001"
+          }
+        },
         {
           "name": "Create",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/evaluations",
             "body": {
               "mode": "raw",
@@ -432,12 +903,26 @@
           "name": "Update",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "url": "{{base_url}}/evaluations/8099",
-            "body": { "mode": "raw", "raw": "{\n  \"score\": 95,\n  \"feedback\": \"Updated after resubmission.\"\n}" }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"score\": 95,\n  \"feedback\": \"Updated after resubmission.\"\n}"
+            }
           }
         },
-        { "name": "Delete", "request": { "method": "DELETE", "url": "{{base_url}}/evaluations/8099" } }
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/evaluations/8099"
+          }
+        }
       ]
     }
   ]
