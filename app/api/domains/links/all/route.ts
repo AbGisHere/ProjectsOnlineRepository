@@ -1,0 +1,3 @@
+import { projectDomains as h } from '@/server/handlers/projects';
+
+export const GET = h.getAll;

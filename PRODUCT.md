@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Frontend: Next.js (user's choice), consuming the existing REST API. The backend already exists and stays: Node.js + Express, Oracle DB via `oracledb` (thin mode), JWT auth with bcrypt, `express-validator`, and centralized error handling. See `README.md`.
+One Next.js app (user's choice) serves both the UI and the REST API (route handlers under `app/api/`), on Oracle DB via `oracledb` (thin mode), with JWT auth and bcryptjs. Deployed as one Vercel project against a free Oracle Autonomous Database; runs locally against Oracle in Docker. The API was moved from Express on 2026-10-14 so everything deploys once. See `README.md`.
 
 ## Users
 
@@ -40,7 +40,7 @@ PRO is relational at its core. It links projects, teams, people, departments, te
 
 - **Hard deadline:** the build must be done tonight (2026-10-13) and will be submitted tomorrow (2026-10-14). Scope decisions should favour complete, working coverage over extra flourish.
 - **All 13 entities must be visible in the UI**, with CRUD where the API supports it: Department, Student, Faculty, Team, Team_Member, Project, Technology, Project_Technology, Domain, Project_Domain, Category, Project_Category and Evaluation. Admin is the extra login table.
-- The UI may only use endpoints that already exist (see `README.md` and `postman_collection.json`). Any new endpoint is a backend change and must be called out.
+- The UI uses the existing `/api` endpoints (see `README.md` and `postman_collection.json`). Any new endpoint is an API change and must be called out.
 - Validation errors come back as `400` with a `details` array per field. The UI must show these next to the relevant fields.
 - Known schema deviations, which are deliberate and documented: Faculty has a `Password` column, and there is an `Admin` table.
 

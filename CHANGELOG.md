@@ -7,22 +7,57 @@ under a dated heading when you tag or submit a version.
 
 ## [Unreleased]
 
-### Fixed
-- The frontend and the API both tried to use port 3001, and the frontend
-  called the API on 3000. The frontend now runs on **3002** and calls the API
-  on **3001** (the `PORT` in `.env.example`). `curl-examples.md` and the
-  README now use 3001 as well.
+## [0.3.0] - 2026-10-14
 
 ### Changed
-- README now covers the whole project (API and frontend): ports, folder
-  layout, a link to this changelog, and the frontend's testing status.
+- **The API moved from Express into Next.js route handlers.** The UI and
+  API are now one app on one port, deployable to Vercel as a single project
+  with one database.
+  - Every endpoint keeps its path, request body and JSON response, now under
+    `/api` (for example `/api/projects/search`).
+  - Every SQL statement, validation rule and Oracle error mapping is carried
+    over unchanged. The SQL lives in `server/handlers/`, and the route files
+    are in `app/api/`.
+  - `DELETE /api/students/:id` and `DELETE /api/faculty/:id` still require a
+    JWT.
+  - Unknown `/api` paths still return the JSON `Route not found` 404.
+- The Next.js app moved from `frontend/` to the repository root, and the two
+  `package.json` files were merged. `npm run dev` now starts everything on
+  `http://localhost:3001`.
+- `bcrypt` was replaced by `bcryptjs`: same algorithm, no native build, so it
+  installs cleanly on Vercel. Existing `$2b$` hashes in `seed.sql` still
+  verify.
+- The browser calls the API on its own origin (`/api`), so no CORS or
+  `NEXT_PUBLIC_API_URL` is needed.
+- `.env.example` documents the Oracle Autonomous Database (TLS, no wallet)
+  settings and adds `DB_POOL_MAX`. `PORT` was removed, since the port is set
+  in the npm scripts.
+- The Postman collection and `curl-examples.md` now use
+  `http://localhost:3001/api`.
+- README rewritten for the single app: run locally, deploy to Vercel, project
+  structure. PRODUCT.md updated to match.
+
+### Removed
+- The Express server: `app.js`, `server.js`, `routes/`, `controllers/`,
+  `middleware/`, `utils/`, `config/`, and the `express`, `cors`, `morgan`,
+  `express-validator`, `nodemon` and `bcrypt` dependencies.
+- The separate `frontend/` package. Its port fix from earlier today (0.2.1,
+  frontend on 3002) no longer applies, since it is all one app now.
 
 ### Known gaps
-- The frontend's write actions (create, edit, delete, link/unlink, add
-  member, evaluate) have not yet been tested against the live Oracle
-  database.
+- Reads and writes against a live Oracle database haven't been run since the
+  move. Validation, auth and error responses were checked without a database.
 - On phones, the status and action columns in wide tables need a sideways
   scroll.
+
+## [0.2.1] - 2026-10-14
+
+### Fixed
+- The frontend and the API both tried to use port 3001; the frontend moved
+  to 3002. (Superseded by 0.3.0.)
+
+### Added
+- This changelog, and a README covering both the API and the frontend.
 
 ## [0.2.0] - 2026-10-14
 

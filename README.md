@@ -1,65 +1,67 @@
 # PRO — Project Online Repository
 
-A DBMS course project: a REST API (Node.js + Express, backed by Oracle
-Database via `oracledb`, running in Docker and set up with SQLcl) and a
-Next.js web frontend that covers all 13 tables.
+A DBMS course project: a single **Next.js** app that serves both the web UI
+and the REST API, backed by **Oracle Database** through `oracledb`. It runs
+locally against Oracle in Docker (set up with SQLcl) and deploys to **Vercel**
+against a free **Oracle Autonomous Database**.
 
-| Part | Folder | Runs on |
+| Part | Where | Local URL |
 |---|---|---|
-| API | project root | `http://localhost:3001` |
-| Frontend | `frontend/` | `http://localhost:3002` |
+| Web app | `app/` (pages) | `http://localhost:3001` |
+| REST API | `app/api/` (route handlers) → `server/` | `http://localhost:3001/api` |
 
 Changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 
 ## Stack
 
-- Node.js + Express
-- Oracle DB (`oracledb` driver, thin mode — no Oracle Instant Client needed)
-- JWT auth (`jsonwebtoken`) + `bcrypt` password hashing
-- `express-validator` for request validation
-- Centralized error handling middleware
-- Frontend: Next.js 16 (App Router) + React 19 + TypeScript, `lucide-react` icons
+- Next.js 16 (App Router) + React 19 + TypeScript
+- Oracle DB (`oracledb` driver, thin mode, so no Oracle Instant Client is needed)
+- JWT auth (`jsonwebtoken`) + `bcryptjs` password hashing
+- Request validation in `server/validate.ts` (same rules and `400` shape the
+  Express version used)
+- Centralized error handling in `server/http.ts` + `server/errors.ts`
+- `lucide-react` icons
 
 ## Project structure
 
 ```
 PRO-Project-Online-Repository/
-├── app.js                 # Express app: middleware + route mounting
-├── server.js               # Entry point: starts the DB pool + HTTP server
-├── config/
-│   └── db.js                # Oracle connection pool + query helpers
-├── controllers/             # Business logic per entity
-├── routes/                  # Express routers per entity
-├── middleware/
-│   ├── auth.js               # JWT verification + role guard
-│   ├── errorHandler.js       # ApiError class + centralized error middleware
-│   └── validate.js           # express-validator result handler
-├── utils/
-│   └── asyncHandler.js       # try/catch wrapper for async route handlers
+├── app/
+│   ├── api/                  # REST API: one route.ts per endpoint path
+│   ├── (app)/                # Signed-in pages: desk, projects, teams, students, …
+│   ├── login/                # Sign-in page
+│   ├── layout.tsx            # Fonts, session + toast providers
+│   └── globals.css           # Design tokens and component styles
+├── server/                   # Server-only code used by app/api
+│   ├── db.ts                 # Oracle connection pool + execute()
+│   ├── http.ts               # route() wrapper: parses input, maps errors to JSON
+│   ├── errors.ts             # ApiError + Oracle error → readable message
+│   ├── auth.ts               # JWT sign/verify, role guard
+│   ├── validate.ts           # Request validation rules
+│   └── handlers/             # The SQL for each entity (auth, people, teams, projects, lookups)
+├── components/               # Shelf, DataTable, EntityForm, CrudPage, TopBar, …
+├── lib/                      # Browser-side API client, session, types, role scope
 ├── sql/
-│   ├── ddl.sql                # Table definitions (13 entities + Admin)
-│   └── seed.sql                # Sample data for the demo
+│   ├── ddl.sql               # Table definitions (13 entities + Admin)
+│   └── seed.sql              # Sample data for the demo
 ├── scripts/
-│   └── runSql.js               # Runs ddl.sql / seed.sql against Oracle
-├── frontend/                # Next.js web app (see "Frontend" below)
-│   ├── app/                  # Routes: login, desk, projects, teams, students, …
-│   ├── components/           # Shelf, DataTable, EntityForm, CrudPage, TopBar, …
-│   └── lib/                  # API client, session, types, role scope
+│   └── runSql.js             # Runs ddl.sql / seed.sql against Oracle
 ├── curl-examples.md          # Example curl call for every endpoint
 ├── postman_collection.json   # Postman collection for every endpoint
 ├── PRODUCT.md                # Who the product is for and its constraints
-├── DESIGN.md                 # Frontend design system (colours, type, components)
+├── DESIGN.md                 # UI design system (colours, type, components)
 ├── CHANGELOG.md              # Release history
 └── .env.example
 ```
 
-## Setup
+## Run it locally
 
 ### 1. Prerequisites
 
-- Node.js 18+
-- Oracle DB running in Docker (already set up via SQLcl per the project brief),
-  reachable at `localhost:1521/FREEPDB1`.
+- Node.js 20.9+ (required by Next.js 16)
+- Oracle DB reachable from your machine: either the local Docker instance at
+  `localhost:1521/FREEPDB1`, or an Oracle Autonomous Database (see
+  [Deploying to Vercel](#deploying-to-vercel)).
 
 ### 2. Install dependencies
 
@@ -79,7 +81,6 @@ Edit `.env` if your DB credentials or JWT secret differ from the defaults:
 DB_USER=system
 DB_PASSWORD=25BCE0014
 DB_CONNECT_STRING=localhost:1521/FREEPDB1
-PORT=3001
 JWT_SECRET=change_this_to_a_long_random_secret
 ```
 
@@ -105,36 +106,46 @@ evaluations. Every seeded Student/Faculty/Admin account has the password
 **`password123`** (bcrypt-hashed in the seed data) so you can log in
 immediately during the review.
 
-### 6. Run the server
+### 6. Start the app
 
 ```bash
-npm start      # production
-npm run dev     # nodemon, auto-restart on changes
+npm run dev      # development, http://localhost:3001
+npm run build && npm start   # production build
 ```
 
-Server runs on `http://localhost:3001` (the `PORT` in `.env.example`; it falls back to 3000 if `PORT` is unset).
+Open `http://localhost:3001` and sign in with any seeded account. The login
+page has a one-click "fill in the demo login" for each role. The API answers
+at `http://localhost:3001/api`; `GET /api` is a health check.
 
-## Frontend (Next.js)
+## Deploying to Vercel
 
-The web app lives in `frontend/` and talks to this API over HTTP.
+The whole project is one Vercel deployment: pages and API together.
 
-```bash
-cd frontend
-npm install
-cp .env.local.example .env.local   # NEXT_PUBLIC_API_URL=http://localhost:3001
-npm run dev                         # http://localhost:3002
-```
+1. **Create the database.** In Oracle Cloud (free tier), create an
+   *Autonomous Database* (Transaction Processing, "Always Free"). Under
+   **Network**, choose *Secure access from everywhere*, and turn **off**
+   *Require mutual TLS (mTLS) authentication* so the app can connect without
+   a wallet. Set the `ADMIN` password.
+2. **Copy the connection string.** On the database's **Database connection**
+   page, pick *TLS* and copy the `_low` connection string.
+3. **Load the schema** from your machine. Put the cloud values in `.env`
+   (`DB_USER=ADMIN`, `DB_PASSWORD`, `DB_CONNECT_STRING=<the TLS string>`), then
+   run `npm run ddl` and `npm run seed`.
+4. **Import the repo into Vercel** (New Project → import from GitHub). The
+   framework is detected as Next.js; keep the root directory as the repo root.
+5. **Set the environment variables** in the Vercel project: `DB_USER`,
+   `DB_PASSWORD`, `DB_CONNECT_STRING`, `JWT_SECRET` (a long random string),
+   and optionally `JWT_EXPIRES_IN`, `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
+6. **Deploy.** Open `https://<your-app>.vercel.app/api` to check the API, then
+   sign in on the home page.
 
-Start the API first (`npm run dev` in the project root). If you change the
-API's `PORT`, set `NEXT_PUBLIC_API_URL` in `frontend/.env.local` to match. Sign in with any
-seeded account (password `password123`). The login page has a one-click
-"fill in the demo login" for each role.
+## What's in the app
 
 | Screen | What it covers |
 |---|---|
 | Desk | A dashboard for each role: a student's teams, reports and feedback; a faculty member's guided teams and evaluation queue; the admin's shelf and table row counts |
-| Repository | All projects as a shelf of spines by academic year, plus a filterable table (`/projects/search`) |
-| Project record | Team, leader, guide and members; link/unlink technologies, domains and categories; the evaluation certificate (`/average-score`) |
+| Repository | All projects as a shelf of spines by academic year, plus a filterable table (`/api/projects/search`) |
+| Project record | Team, leader, guide and members; link/unlink technologies, domains and categories; the evaluation certificate (`/api/projects/:id/average-score`) |
 | Teams | Team CRUD, plus adding/removing members (`Team_Member`) |
 | Students, Faculty, Departments | CRUD, with each person's project history or guided teams |
 | Evaluations | Evaluation CRUD |
@@ -143,30 +154,36 @@ seeded account (password `password123`). The login page has a one-click
 
 Roles are enforced in the UI only: admins can change everything; faculty
 evaluate and manage the teams they guide; students manage their own teams
-and projects. The API itself only guards `DELETE /students/:id` and
-`DELETE /faculty/:id` (see Authentication).
+and projects. The API itself only guards `DELETE /api/students/:id` and
+`DELETE /api/faculty/:id` (see Authentication).
 
 Validation failures (`400` with `details`) appear next to the matching form
 field, and Oracle errors are rewritten into plain sentences, so no raw
 `ORA-` text reaches the screen.
 
 **Testing status:** every screen has been checked on desktop (1440px) and
-mobile (390px) against the seed data. Write actions (create, edit, delete,
-link/unlink, add member, evaluate) have **not yet been run against the live
-Oracle database**. Check them once before the review.
+mobile (390px) against the seed data, and the API's validation, auth and
+error responses have been checked without a database. Reads and writes
+against a live Oracle database have **not yet been run since the move to
+Next.js**. Check them once before the review.
 
 ## Authentication
 
-- `POST /auth/register` — create a Student, Faculty, or Admin account.
-- `POST /auth/login` — returns a JWT. Include it as `Authorization: Bearer <token>`
-  on protected routes (currently `DELETE /students/:id` and `DELETE /faculty/:id`
-  require a valid token — extend `authenticate`/`requireRole` in
-  `middleware/auth.js` to protect more routes as needed for your demo).
+- `POST /api/auth/register`: create a Student, Faculty, or Admin account.
+- `POST /api/auth/login`: returns a JWT. Include it as `Authorization: Bearer <token>`
+  on protected routes. Currently `DELETE /api/students/:id` and
+  `DELETE /api/faculty/:id` require a valid token; call `authenticate()` /
+  `requireRole()` from `server/auth.ts` in a handler to protect more routes.
 
-Passwords are hashed with `bcrypt` before storage; plaintext passwords are
-never stored or returned by any endpoint.
+Passwords are hashed with `bcryptjs` before storage; plaintext passwords are
+never stored or returned by any endpoint. `bcryptjs` reads the existing
+`$2b$` hashes in `seed.sql` unchanged.
 
 ## Endpoints
+
+Every path below is served under **`/api`**: for example
+`GET /projects/search` is `GET http://localhost:3001/api/projects/search` locally,
+or `https://<your-app>.vercel.app/api/projects/search` once deployed.
 
 ### Auth
 | Method | Path | Description |
@@ -257,21 +274,26 @@ See `curl-examples.md` for a runnable example of every endpoint above.
 - **Schema deviation**: the brief's `Faculty` table had no `Password` column,
   but deliverable #5 asks for Faculty login. A `Password` column was added to
   `Faculty` (see the comment in `sql/ddl.sql`) so all three roles can log in
-  consistently. An `Admin` table was also added — it isn't one of the 13
+  consistently. An `Admin` table was also added. It isn't one of the 13
   listed entities, but the login flow needs somewhere to store admin
   credentials.
-- **Connection pooling**: `config/db.js` creates a single Oracle connection
-  pool at startup (`oracledb.createPool`) and hands out/reclaims connections
-  per request via `withConnection`, rather than opening a new connection per
-  query.
-- **Validation**: every POST/PUT route runs `express-validator` checks before
-  hitting the controller; failures return `400` with a `details` array
-  listing each invalid field.
-- **Error handling**: all controllers use `asyncHandler` so a thrown error
-  (including Oracle constraint violations) is forwarded to the centralized
-  `errorHandler` middleware in `middleware/errorHandler.js`, which maps
+- **One app instead of two**: the API started as an Express server and moved
+  into Next.js route handlers, so the UI and API deploy together. Every SQL
+  statement, validation rule and error mapping was carried over unchanged;
+  only the request/response plumbing differs.
+- **Connection pooling**: `server/db.ts` creates one Oracle connection pool
+  per server instance (`oracledb.createPool`) and hands out/reclaims a
+  connection per query, rather than opening a new connection each time. On
+  Vercel each warm function instance reuses its pool; `DB_POOL_MAX` keeps it
+  small.
+- **Validation**: every POST/PUT handler validates its body before running
+  SQL; failures return `400` with a `details` array listing each invalid
+  field.
+- **Error handling**: every handler is wrapped by `route()` in
+  `server/http.ts`, so a thrown error (including Oracle constraint
+  violations) becomes the standard JSON error. `server/errors.ts` maps
   common Oracle error numbers (unique constraint, FK violation) to readable
   messages.
-- **Team creation guard**: `POST /teams` explicitly checks that `Leader_ID`
-  exists in `Student` and `Guide_ID` exists in `Faculty` before inserting,
-  returning a clear `400` instead of a raw Oracle FK error.
+- **Team creation guard**: `POST /api/teams` explicitly checks that
+  `Leader_ID` exists in `Student` and `Guide_ID` exists in `Faculty` before
+  inserting, returning a clear `400` instead of a raw Oracle FK error.
