@@ -1,0 +1,769 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-13T17:55:50+00:00",
+  "title": "Design System: PRO: Project Online Repository",
+  "extensions": {
+    "colorMeta": {
+      "cloth": {
+        "role": "primary",
+        "displayName": "Maroon Bookcloth",
+        "tonalRamp": [
+          "#1e0004",
+          "#480413",
+          "#6a252e",
+          "#8c444b",
+          "#b3676c",
+          "#db8b90",
+          "#ffb3b7",
+          "#fde9e9"
+        ]
+      },
+      "cloth-deep": {
+        "role": "primary",
+        "displayName": "Deep Cloth",
+        "tonalRamp": [
+          "#1e0004",
+          "#430e18",
+          "#632c32",
+          "#854a4f",
+          "#ab6c71",
+          "#d29095",
+          "#fbb5ba",
+          "#fee9ea"
+        ]
+      },
+      "cloth-raised": {
+        "role": "primary",
+        "displayName": "Raised Cloth",
+        "tonalRamp": [
+          "#1d0105",
+          "#480515",
+          "#6d212e",
+          "#90414b",
+          "#b7646d",
+          "#df8890",
+          "#feb4ba",
+          "#ffe8e9"
+        ]
+      },
+      "cloth-ink": {
+        "role": "primary",
+        "displayName": "Cloth Ink",
+        "tonalRamp": [
+          "#100a02",
+          "#2a2317",
+          "#463e32",
+          "#655c4f",
+          "#887f71",
+          "#ada395",
+          "#d3c9ba",
+          "#f7edde"
+        ]
+      },
+      "cloth-ink-muted": {
+        "role": "primary",
+        "displayName": "Muted Cloth Ink",
+        "tonalRamp": [
+          "#150701",
+          "#302014",
+          "#4d3c2f",
+          "#6c594c",
+          "#907c6e",
+          "#b5a091",
+          "#dcc6b7",
+          "#ffeadc"
+        ]
+      },
+      "foil": {
+        "role": "secondary",
+        "displayName": "Gold Foil",
+        "tonalRamp": [
+          "#110a00",
+          "#2f2203",
+          "#523c00",
+          "#76590d",
+          "#9f7a19",
+          "#c69f46",
+          "#edc56e",
+          "#feedc9"
+        ]
+      },
+      "foil-bright": {
+        "role": "secondary",
+        "displayName": "Bright Foil",
+        "tonalRamp": [
+          "#110a00",
+          "#2f2200",
+          "#503d06",
+          "#735a15",
+          "#9c7b23",
+          "#c2a04d",
+          "#e9c673",
+          "#feedc7"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Report Paper",
+        "tonalRamp": [
+          "#0c0b09",
+          "#252422",
+          "#40403d",
+          "#5e5d5b",
+          "#81807d",
+          "#a5a4a2",
+          "#cbcac7",
+          "#efeeeb"
+        ]
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Sheet",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#808080",
+          "#a4a4a4",
+          "#cacaca",
+          "#eeeeee"
+        ]
+      },
+      "sheet-tint": {
+        "role": "neutral",
+        "displayName": "Sheet Tint",
+        "tonalRamp": [
+          "#0c0b09",
+          "#252422",
+          "#40403d",
+          "#5e5d5b",
+          "#81807d",
+          "#a5a4a2",
+          "#cbcac7",
+          "#efeeeb"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "#0c0b0c",
+          "#242326",
+          "#403f41",
+          "#5e5d5f",
+          "#817f82",
+          "#a5a4a7",
+          "#cbcacc",
+          "#efeef1"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "tonalRamp": [
+          "#0c0a0e",
+          "#262327",
+          "#413e43",
+          "#5f5c62",
+          "#827f84",
+          "#a6a3a9",
+          "#ccc9cf",
+          "#f1edf3"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "tonalRamp": [
+          "#0d090f",
+          "#262229",
+          "#423e45",
+          "#605b63",
+          "#837e86",
+          "#a8a2ab",
+          "#cec8d1",
+          "#f2ecf5"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "tonalRamp": [
+          "#0d0b08",
+          "#262320",
+          "#423f3c",
+          "#605d59",
+          "#837f7c",
+          "#a8a4a0",
+          "#cecac6",
+          "#f2eeea"
+        ]
+      },
+      "rule-soft": {
+        "role": "neutral",
+        "displayName": "Rule Soft",
+        "tonalRamp": [
+          "#0d0b08",
+          "#262421",
+          "#423f3c",
+          "#605d5a",
+          "#82807c",
+          "#a7a4a0",
+          "#cdcac6",
+          "#f1eeea"
+        ]
+      },
+      "ledge": {
+        "role": "tertiary",
+        "displayName": "Ledge Wood",
+        "tonalRamp": [
+          "#130900",
+          "#341f01",
+          "#563911",
+          "#755731",
+          "#9a7a52",
+          "#bf9e76",
+          "#e6c49a",
+          "#feebd5"
+        ]
+      },
+      "ledge-dark": {
+        "role": "tertiary",
+        "displayName": "Ledge Shadow",
+        "tonalRamp": [
+          "#130800",
+          "#341f03",
+          "#533a1b",
+          "#735839",
+          "#977a5a",
+          "#bd9f7d",
+          "#e4c4a2",
+          "#feebd6"
+        ]
+      },
+      "st-completed": {
+        "role": "tertiary",
+        "displayName": "Completed Binding (Maroon)",
+        "tonalRamp": [
+          "#1d0104",
+          "#480414",
+          "#6d212d",
+          "#90414a",
+          "#b7646b",
+          "#e0888f",
+          "#feb4b8",
+          "#ffe8e9"
+        ]
+      },
+      "st-submitted": {
+        "role": "tertiary",
+        "displayName": "Submitted Binding (Black Cloth)",
+        "tonalRamp": [
+          "#0b0b0e",
+          "#242427",
+          "#3f3f43",
+          "#5d5d61",
+          "#808084",
+          "#a4a4a8",
+          "#cacace",
+          "#eeeef2"
+        ]
+      },
+      "st-ongoing": {
+        "role": "tertiary",
+        "displayName": "Ongoing Binding (Navy)",
+        "tonalRamp": [
+          "#000727",
+          "#112245",
+          "#2c3f64",
+          "#485e85",
+          "#6a81aa",
+          "#8ea5d0",
+          "#b3cbf8",
+          "#e7effd"
+        ]
+      },
+      "st-rejected": {
+        "role": "tertiary",
+        "displayName": "Rejected Binding (Grey Cloth)",
+        "tonalRamp": [
+          "#0e0b08",
+          "#272320",
+          "#433f3b",
+          "#615d59",
+          "#847f7b",
+          "#a8a49f",
+          "#cecac5",
+          "#f2eee9"
+        ]
+      },
+      "h-project": {
+        "role": "tertiary",
+        "displayName": "Project Hue",
+        "tonalRamp": [
+          "#1d0104",
+          "#480414",
+          "#6d212d",
+          "#90414a",
+          "#b7646b",
+          "#e0888f",
+          "#feb4b8",
+          "#ffe8e9"
+        ]
+      },
+      "h-project-bg": {
+        "role": "tertiary",
+        "displayName": "Project Wash",
+        "tonalRamp": [
+          "#11090a",
+          "#2a2123",
+          "#473d3e",
+          "#655a5c",
+          "#887d7f",
+          "#ada1a3",
+          "#d3c7c9",
+          "#f8ebed"
+        ]
+      },
+      "h-team": {
+        "role": "tertiary",
+        "displayName": "Team Hue",
+        "tonalRamp": [
+          "#000f07",
+          "#032c1b",
+          "#1d4a35",
+          "#3c6853",
+          "#5f8c75",
+          "#83b199",
+          "#a8d7be",
+          "#cbfce2"
+        ]
+      },
+      "h-team-bg": {
+        "role": "tertiary",
+        "displayName": "Team Wash",
+        "tonalRamp": [
+          "#060d09",
+          "#1e2621",
+          "#39423d",
+          "#57605a",
+          "#79837d",
+          "#9da8a1",
+          "#c3cec7",
+          "#e7f2eb"
+        ]
+      },
+      "h-people": {
+        "role": "tertiary",
+        "displayName": "People Hue",
+        "tonalRamp": [
+          "#000727",
+          "#112245",
+          "#2c3f64",
+          "#485e85",
+          "#6a81aa",
+          "#8ea5d0",
+          "#b3cbf8",
+          "#e7effd"
+        ]
+      },
+      "h-people-bg": {
+        "role": "tertiary",
+        "displayName": "People Wash",
+        "tonalRamp": [
+          "#080b11",
+          "#21242b",
+          "#3c4047",
+          "#5a5e65",
+          "#7c8088",
+          "#a0a5ad",
+          "#c6cbd3",
+          "#eaeff8"
+        ]
+      },
+      "h-subject": {
+        "role": "tertiary",
+        "displayName": "Subject Hue",
+        "tonalRamp": [
+          "#110a00",
+          "#302103",
+          "#533b01",
+          "#77580e",
+          "#9c7b39",
+          "#c29f5e",
+          "#e9c583",
+          "#feeccd"
+        ]
+      },
+      "h-subject-bg": {
+        "role": "tertiary",
+        "displayName": "Subject Wash",
+        "tonalRamp": [
+          "#100a01",
+          "#292315",
+          "#463f30",
+          "#645d4d",
+          "#87806f",
+          "#aca492",
+          "#d2cab7",
+          "#f6eedb"
+        ]
+      },
+      "h-eval": {
+        "role": "tertiary",
+        "displayName": "Evaluation Hue",
+        "tonalRamp": [
+          "#0e0127",
+          "#281451",
+          "#433271",
+          "#615193",
+          "#8373b9",
+          "#a798e0",
+          "#ccc1fd",
+          "#efecfe"
+        ]
+      },
+      "h-eval-bg": {
+        "role": "tertiary",
+        "displayName": "Evaluation Wash",
+        "tonalRamp": [
+          "#0c0a11",
+          "#25222b",
+          "#413e47",
+          "#5f5c66",
+          "#827e89",
+          "#a6a2ae",
+          "#ccc8d4",
+          "#f0ecf8"
+        ]
+      },
+      "danger": {
+        "role": "neutral",
+        "displayName": "Danger",
+        "tonalRamp": [
+          "#1e0100",
+          "#480603",
+          "#7b0602",
+          "#ad1a10",
+          "#d74839",
+          "#fa7765",
+          "#feb6aa",
+          "#ffe9e5"
+        ]
+      },
+      "danger-bg": {
+        "role": "neutral",
+        "displayName": "Danger Wash",
+        "tonalRamp": [
+          "#120807",
+          "#2d211f",
+          "#493c3b",
+          "#685a58",
+          "#8b7c7a",
+          "#b0a09f",
+          "#d7c6c4",
+          "#fbeae8"
+        ]
+      },
+      "ok-bg": {
+        "role": "neutral",
+        "displayName": "OK Wash",
+        "tonalRamp": [
+          "#060d08",
+          "#1e2721",
+          "#39423c",
+          "#56615a",
+          "#79837c",
+          "#9da8a0",
+          "#c2cec6",
+          "#e6f2ea"
+        ]
+      },
+      "focus": {
+        "role": "secondary",
+        "displayName": "Focus Brass",
+        "tonalRamp": [
+          "#120900",
+          "#322002",
+          "#543a09",
+          "#7b5606",
+          "#a77610",
+          "#ce9b42",
+          "#f5c16a",
+          "#feecd0"
+        ]
+      },
+      "field-rule": {
+        "role": "neutral",
+        "displayName": "Field Rule",
+        "tonalRamp": [
+          "#1d1a17",
+          "#38332f",
+          "#544e4a",
+          "#716a66",
+          "#918a85",
+          "#b2aba5",
+          "#d3ccc6",
+          "#f3eeea"
+        ]
+      },
+      "lit-row": {
+        "role": "neutral",
+        "displayName": "Lit Row",
+        "tonalRamp": [
+          "#1f1503",
+          "#3d2e12",
+          "#5c4a2a",
+          "#7c6744",
+          "#a0896a",
+          "#c3ae91",
+          "#e5d4bb",
+          "#fbf4e4"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Foil Display",
+        "purpose": "Login cloth headline only, in foil."
+      },
+      "foil-title": {
+        "displayName": "Foil Title",
+        "purpose": "Certificate titles; the wordmark uses the same face at 28px/44px."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles (record titles 30px)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section, panel and shelf heads."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running UI text; abstracts at 15.5px/1.65, 70ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, status words, metadata terms, table headers."
+      },
+      "numeral": {
+        "displayName": "Tabular Numeral",
+        "purpose": "IDs, years, scores and counts."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet",
+        "value": "0 1px 2px rgba(40,20,20,0.06), 0 6px 18px -8px rgba(40,20,20,0.12)",
+        "purpose": "Every sheet; barely there."
+      },
+      {
+        "name": "cloth-bar",
+        "value": "0 1px 0 #47121b, 0 4px 14px -6px rgba(40,10,15,0.45)",
+        "purpose": "Sticky top bar."
+      },
+      {
+        "name": "spine-bevel",
+        "value": "inset 2px 0 0 rgba(255,255,255,0.08), inset -3px 0 0 rgba(0,0,0,0.22)",
+        "purpose": "Rounded-back highlight and shade on spines."
+      },
+      {
+        "name": "spine-pulled",
+        "value": "inset 2px 0 0 rgba(255,255,255,0.12), inset -3px 0 0 rgba(0,0,0,0.22), 0 8px 14px -6px rgba(30,10,10,0.45)",
+        "purpose": "Spine on hover, focus or relation light, with a 10px lift."
+      },
+      {
+        "name": "ledge",
+        "value": "0 3px 6px -3px rgba(60,40,20,0.5)",
+        "purpose": "Under the wooden ledge."
+      },
+      {
+        "name": "toast",
+        "value": "0 10px 30px -10px rgba(40,10,15,0.6)",
+        "purpose": "Floating cloth toast."
+      },
+      {
+        "name": "focus-halo",
+        "value": "0 0 0 3px rgba(201,162,74,0.35)",
+        "purpose": "Input focus ring alongside a cloth border."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The single easing curve for every transition."
+      },
+      {
+        "name": "state",
+        "value": "150ms",
+        "purpose": "Colour, border and background changes."
+      },
+      {
+        "name": "spine-lift",
+        "value": "220ms",
+        "purpose": "Spine pull, and the docked panel slide-in (12px from the right)."
+      },
+      {
+        "name": "toast-in",
+        "value": "260ms",
+        "purpose": "Toast rises 10px into place."
+      },
+      {
+        "name": "press",
+        "value": "120ms",
+        "purpose": "Button 1px press drop."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "1180px"
+      },
+      {
+        "name": "drawer",
+        "value": "1020px"
+      },
+      {
+        "name": "phone",
+        "value": "640px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Cloth action button for the role's primary action; may carry a foil dot.",
+      "html": "<button class=\"ds-btn ds-btn-primary\"><span class=\"ds-foil-dot\"></span>Register a project</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 15px;border-radius:var(--r-md);border:1px solid transparent;font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;transition:background 150ms var(--ease),border-color 150ms var(--ease),color 150ms var(--ease),transform 120ms var(--ease)}.ds-btn:active{transform:translateY(1px)}.ds-btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}.ds-btn-primary{background:var(--cloth);color:#fff}.ds-btn-primary:hover{background:var(--cloth-deep)}.ds-foil-dot{width:6px;height:6px;border-radius:50%;background:var(--foil)}"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Secondary action on paper or sheets.",
+      "html": "<button class=\"ds-btn-quiet\">Cancel</button>",
+      "css": ".ds-btn-quiet{display:inline-flex;align-items:center;height:38px;padding:0 15px;border-radius:var(--r-md);background:var(--sheet);color:var(--ink);border:1px solid var(--rule);font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;transition:background 150ms var(--ease),border-color 150ms var(--ease)}.ds-btn-quiet:hover{border-color:#b9b2ab;background:var(--sheet-tint)}.ds-btn-quiet:active{transform:translateY(1px)}.ds-btn-quiet:focus-visible{outline:2px solid var(--focus);outline-offset:2px}"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Destructive confirmation only.",
+      "html": "<button class=\"ds-btn-danger\">Delete team</button>",
+      "css": ".ds-btn-danger{display:inline-flex;align-items:center;height:38px;padding:0 15px;border-radius:var(--r-md);background:var(--danger);color:#fff;border:none;font-family:var(--font-ui);font-size:14px;font-weight:600;cursor:pointer;transition:background 150ms var(--ease)}.ds-btn-danger:hover{background:#8f1c13}.ds-btn-danger:focus-visible{outline:2px solid var(--focus);outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Labelled field with hint and field-level error.",
+      "html": "<label class=\"ds-field\"><span>Project title <b>*</b></span><input class=\"ds-input\" placeholder=\"Smart Attendance System\"><small>Shown on the spine and in search.</small></label>",
+      "css": ".ds-field{display:grid;gap:6px;font-family:var(--font-ui);max-width:320px}.ds-field span{font-size:13px;font-weight:600;color:var(--ink-2)}.ds-field b{color:var(--danger);font-weight:600}.ds-field small{font-size:12.5px;color:var(--muted)}.ds-input{height:38px;padding:0 12px;background:var(--sheet);border:1px solid #cfc9c3;border-radius:var(--r-md);font:inherit;font-size:14px;color:var(--ink);transition:border-color 150ms var(--ease),box-shadow 150ms var(--ease)}.ds-input::placeholder{color:#77717a}.ds-input:hover{border-color:#aaa29b}.ds-input:focus{outline:none;border-color:var(--cloth);box-shadow:0 0 0 3px rgba(201,162,74,.35)}"
+    },
+    {
+      "name": "Cloth Top Bar",
+      "kind": "nav",
+      "refersTo": "top-bar",
+      "description": "Sticky bookcloth bar: foil wordmark, nav with foil active rule, role stamp.",
+      "html": "<nav class=\"ds-bar\"><a class=\"ds-mark\">PRO</a><a class=\"ds-nav\">Desk</a><a class=\"ds-nav\" aria-current=\"page\">Repository</a><a class=\"ds-nav\">Teams</a><span class=\"ds-stamp\">Admin</span></nav>",
+      "css": ".ds-bar{height:60px;display:flex;align-items:center;gap:6px;padding:0 24px;background:var(--cloth);color:var(--cloth-ink);font-family:var(--font-ui);box-shadow:0 1px 0 var(--cloth-deep),0 4px 14px -6px rgba(40,10,15,.45)}.ds-mark{font-family:var(--font-foil);font-size:28px;letter-spacing:.04em;color:var(--foil);margin-right:18px}.ds-nav{display:flex;align-items:center;height:100%;padding:0 11px;font-size:14px;color:var(--cloth-ink-muted);text-decoration:none;cursor:pointer;box-shadow:inset 0 -3px 0 transparent;transition:color 150ms var(--ease),box-shadow 200ms var(--ease)}.ds-nav:hover{color:#fff}.ds-nav[aria-current=page]{color:#fff;box-shadow:inset 0 -3px 0 var(--foil)}.ds-stamp{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--foil);border:1.5px solid var(--foil);padding:2px 8px;border-radius:3px}"
+    },
+    {
+      "name": "Relation Chips",
+      "kind": "chip",
+      "refersTo": "chip-team",
+      "description": "One fixed hue per entity family; linked chips ring on hover.",
+      "html": "<div class=\"ds-chips\"><a class=\"ds-chip ds-chip-team\">Neural Ninjas</a><a class=\"ds-chip ds-chip-people\">Dr. Manoj Trivedi</a><a class=\"ds-chip ds-chip-subject\">Web Development</a><a class=\"ds-chip ds-chip-project\">Chatbot</a><a class=\"ds-chip ds-chip-eval\">Score 76</a></div>",
+      "css": ".ds-chips{display:flex;flex-wrap:wrap;gap:6px;font-family:var(--font-ui)}.ds-chip{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:13px;line-height:20px;font-weight:500;text-decoration:none;cursor:pointer;transition:box-shadow 150ms var(--ease)}.ds-chip:hover{box-shadow:inset 0 0 0 1.5px currentColor}.ds-chip:focus-visible{outline:2px solid var(--focus);outline-offset:2px}.ds-chip-project{background:var(--h-project-bg);color:var(--h-project)}.ds-chip-team{background:var(--h-team-bg);color:var(--h-team)}.ds-chip-people{background:var(--h-people-bg);color:var(--h-people)}.ds-chip-subject{background:var(--h-subject-bg);color:var(--h-subject)}.ds-chip-eval{background:var(--h-eval-bg);color:var(--h-eval)}"
+    },
+    {
+      "name": "Status Mark",
+      "kind": "chip",
+      "refersTo": "spine-completed",
+      "description": "Binding swatch with foil cap, always paired with the status word.",
+      "html": "<div class=\"ds-st-row\"><span class=\"ds-st\"><i style=\"background:var(--st-ongoing)\"></i>Ongoing</span><span class=\"ds-st\"><i style=\"background:var(--st-submitted)\"></i>Submitted</span><span class=\"ds-st\"><i style=\"background:var(--st-completed)\"></i>Completed</span><span class=\"ds-st ds-st-rej\"><i style=\"background:var(--st-rejected)\"></i>Rejected</span></div>",
+      "css": ".ds-st-row{display:flex;gap:14px;font-family:var(--font-ui)}.ds-st{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink-2)}.ds-st i{width:8px;height:14px;border-radius:1px 1px 0 0;display:inline-block;box-shadow:inset 0 -3px 0 var(--foil)}.ds-st-rej{color:var(--muted)}.ds-st-rej i{box-shadow:none}"
+    },
+    {
+      "name": "Year Shelf",
+      "kind": "custom",
+      "refersTo": "spine-completed",
+      "description": "Signature: status-bound spines on a wooden ledge; hover pulls a spine up.",
+      "html": "<div class=\"ds-shelf\"><div class=\"ds-spines\"><a class=\"ds-spine\" style=\"background:var(--st-completed);height:150px\"><span>Smart Attendance</span><em>001</em></a><a class=\"ds-spine\" style=\"background:var(--st-submitted);height:120px\"><span>Chatbot</span><em>002</em></a><a class=\"ds-spine\" style=\"background:var(--st-ongoing);height:132px\"><span>IoT Irrigation</span><em>003</em></a><a class=\"ds-spine ds-rej\" style=\"background:var(--st-rejected);height:110px\"><span>Serverless</span><em>011</em></a></div><div class=\"ds-ledge\"></div><div class=\"ds-year\"><b>2025-2026</b><span>4 reports</span></div></div>",
+      "css": ".ds-shelf{display:inline-grid;font-family:var(--font-ui)}.ds-spines{display:flex;align-items:flex-end;gap:4px;height:176px;padding:0 6px}.ds-spine{position:relative;width:42px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 0 8px;border-radius:2px 2px 0 0;color:var(--foil-bright);text-decoration:none;cursor:pointer;box-shadow:inset 2px 0 0 rgba(255,255,255,.08),inset -3px 0 0 rgba(0,0,0,.22);transition:transform 220ms var(--ease),box-shadow 220ms var(--ease)}.ds-spine::before,.ds-spine::after{content:'';position:absolute;left:5px;right:5px;height:1.5px;background:var(--foil);opacity:.75}.ds-spine::before{top:6px}.ds-spine::after{bottom:26px}.ds-spine span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:12px;font-weight:600;line-height:1.15}.ds-spine em{font-style:normal;font-family:var(--font-num);font-size:10.5px;opacity:.85}.ds-rej{color:#f1ede6}.ds-rej::before,.ds-rej::after{background:#e9e4dc;opacity:.6}.ds-spine:hover,.ds-spine:focus-visible{transform:translateY(-10px);box-shadow:inset 2px 0 0 rgba(255,255,255,.12),inset -3px 0 0 rgba(0,0,0,.22),0 8px 14px -6px rgba(30,10,10,.45)}.ds-spine:focus-visible{outline:2px solid var(--focus);outline-offset:3px}.ds-ledge{height:9px;background:linear-gradient(var(--ledge),var(--ledge-dark));border-radius:1px 1px 2px 2px;box-shadow:0 3px 6px -3px rgba(60,40,20,.5)}.ds-year{margin-top:8px;display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink-2)}.ds-year b{font-family:var(--font-num);font-weight:600}"
+    },
+    {
+      "name": "Evaluation Certificate",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "Signature: double foil frame, Caslon title, mono average score.",
+      "html": "<section class=\"ds-cert\"><h2>Evaluation Certificate</h2><p>Assessed by 1 member of faculty.</p><div class=\"ds-big\">76 <small>/ 100</small></div></section>",
+      "css": ".ds-cert{position:relative;max-width:340px;padding:26px 26px 22px;text-align:center;background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r-lg);box-shadow:var(--shadow-sheet);font-family:var(--font-ui)}.ds-cert::before{content:'';position:absolute;inset:8px;border:1px solid var(--foil);border-radius:3px}.ds-cert::after{content:'';position:absolute;inset:11px;border:.5px solid rgba(201,162,74,.5);border-radius:2px}.ds-cert h2{margin:0;font-family:var(--font-foil);font-weight:400;font-size:25px;color:var(--cloth);letter-spacing:.01em}.ds-cert p{margin:8px 0 0;font-size:13.5px;color:var(--muted)}.ds-big{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-size:52px;line-height:1;color:var(--cloth);margin:16px 0 4px;letter-spacing:-.03em}.ds-big small{font-size:18px;color:var(--muted);letter-spacing:0}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Bound Report Shelf",
+    "overview": "PRO is the department's shelf of bound final-year reports, filed by academic year. The shell is maroon bookcloth: a 60px top bar on desktop and a cloth drawer on narrow screens. Everything you read sits on cool report paper as white sheets with hairline rules. Gold foil is scarce. It marks identity (the wordmark, the role stamp, foil-stamped titles) and the current place (the active-tab rule). The signature object is the year shelf: one spine per project, bound in its status colour, standing on a wooden ledge and grouped by academic year.\n\nThe system is dense and data-first. Tables, chips and records do the work, and ornament is limited to the materials of a bound report: cloth, foil, paper, ledge. Three borrowed devices hold it together. Each entity family has one fixed hue wherever it appears. Hovering a relation lights the rows it touches and dims the rest. Every number is set in tabular monospace. The world rejects the white-sidebar, KPI-card admin template. No sidebar, no stat tiles, no gradient hero.",
+    "keyCharacteristics": [
+      "Bookcloth shell (top bar, drawer, login cloth panel, toast) over a cool report-paper ground.",
+      "Foil gold reserved for identity marks and the current place.",
+      "Status shown as binding colour, always paired with its word.",
+      "One hue per entity family, carried by chips and hue marks.",
+      "Tabular monospace numerals for IDs, years and scores.",
+      "Relation hover lights the related rows and spines and dims the rest."
+    ],
+    "rules": [
+      {
+        "name": "The Foil Is Earned Rule",
+        "body": "Gold appears as type only on cloth: the wordmark, the login headline, the role stamp and spine titles. On paper it appears only as a rule or a frame (the active tab, the certificate border, status caps), plus the skip link's foil plate with cloth-deep text. Never use it as running text on paper.",
+        "section": "colors"
+      },
+      {
+        "name": "The Binding Is Status Rule",
+        "body": "The four binding colours mean project status and nothing else. A binding colour never appears without its word next to it or a legend beside it.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Hue Per Family Rule",
+        "body": "An entity family keeps its hue everywhere. Projects are maroon, teams green, people navy, subjects (domains, technologies, categories) ochre and evaluations violet. Never use a family hue for decoration or for a different family.",
+        "section": "colors"
+      },
+      {
+        "name": "The Foil Type Rule",
+        "body": "Caslon is only for the wordmark, the login headline and certificate titles. Never use it for a page title, a section head or UI chrome.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Any number a reader compares (ID, year, score, count) is set in the mono with tabular figures and right-aligned in numeric columns.",
+        "section": "typography"
+      },
+      {
+        "name": "The Only Things That Lift Are Books Rule",
+        "body": "Only shelf objects move off the plane. Sheets, chips and buttons stay flat. A button's only press feedback is a 1px drop.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** build every new surface on paper, with white sheets (8px radius, rule border, Sheet shadow) and cloth only for the shell.",
+      "**Do** pair every binding colour with its status word, using the status mark or the shelf legend.",
+      "**Do** colour any reference to a project, team, person, subject or evaluation with that family's hue, as a chip or a hue mark.",
+      "**Do** set IDs, years, scores and counts in Atkinson Hyperlegible Mono with tabular figures.",
+      "**Do** light related rows and spines on relation hover, and dim the rest.",
+      "**Do** show validation errors under the field, in danger text with an icon."
+    ],
+    "donts": [
+      "**Don't** build the white-sidebar, KPI-card admin template. Navigation lives in the cloth bar, and the repository opens on the shelf.",
+      "**Don't** set gold foil as text on paper. On paper it is a rule or a frame (the skip link's plate is the one fill).",
+      "**Don't** use Libre Caslon Display outside the wordmark, the login headline and certificate titles.",
+      "**Don't** use a binding colour for anything except status, or a family hue for anything except its family.",
+      "**Don't** lift sheets, chips or buttons with shadows. Only shelf objects leave the plane.",
+      "**Don't** warm the ground to cream. Report paper stays cool."
+    ]
+  }
+}

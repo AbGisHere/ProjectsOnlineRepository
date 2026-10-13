@@ -98,6 +98,36 @@ npm run dev     # nodemon, auto-restart on changes
 
 Server runs on `http://localhost:3000` by default.
 
+## Frontend (Next.js)
+
+The web app lives in `frontend/` and talks to this API over HTTP.
+
+```bash
+cd frontend
+npm install
+cp .env.local.example .env.local   # NEXT_PUBLIC_API_URL=http://localhost:3000
+npm run dev                         # http://localhost:3001
+```
+
+Start the API first (`npm run dev` in the project root). Sign in with any
+seeded account (password `password123`). The login page has a one-click
+"fill in the demo login" for each role.
+
+| Screen | What it covers |
+|---|---|
+| Desk | A dashboard for each role: a student's teams, reports and feedback; a faculty member's guided teams and evaluation queue; the admin's shelf and table row counts |
+| Repository | All projects as a shelf of spines by academic year, plus a filterable table (`/projects/search`) |
+| Project record | Team, leader, guide and members; link/unlink technologies, domains and categories; the evaluation certificate (`/average-score`) |
+| Teams | Team CRUD, plus adding/removing members (`Team_Member`) |
+| Students, Faculty, Departments | CRUD, with each person's project history or guided teams |
+| Evaluations | Evaluation CRUD |
+| Subjects | Technology, Domain and Category CRUD, plus every junction-table row |
+| Ledger | All 13 tables exactly as the API returns them |
+
+Roles are enforced in the UI: admins can change everything; faculty
+evaluate and manage the teams they guide; students manage their own teams
+and projects.
+
 ## Authentication
 
 - `POST /auth/register` — create a Student, Faculty, or Admin account.
