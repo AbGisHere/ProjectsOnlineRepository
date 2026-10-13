@@ -1,8 +1,15 @@
 # PRO — Project Online Repository
 
-A REST API backend for a DBMS course project. Node.js + Express, backed by
-Oracle Database (via `oracledb`), running against an Oracle instance in
-Docker set up with SQLcl.
+A DBMS course project: a REST API (Node.js + Express, backed by Oracle
+Database via `oracledb`, running in Docker and set up with SQLcl) and a
+Next.js web frontend that covers all 13 tables.
+
+| Part | Folder | Runs on |
+|---|---|---|
+| API | project root | `http://localhost:3001` |
+| Frontend | `frontend/` | `http://localhost:3002` |
+
+Changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 
 ## Stack
 
@@ -11,6 +18,7 @@ Docker set up with SQLcl.
 - JWT auth (`jsonwebtoken`) + `bcrypt` password hashing
 - `express-validator` for request validation
 - Centralized error handling middleware
+- Frontend: Next.js 16 (App Router) + React 19 + TypeScript, `lucide-react` icons
 
 ## Project structure
 
@@ -33,7 +41,15 @@ PRO-Project-Online-Repository/
 │   └── seed.sql                # Sample data for the demo
 ├── scripts/
 │   └── runSql.js               # Runs ddl.sql / seed.sql against Oracle
+├── frontend/                # Next.js web app (see "Frontend" below)
+│   ├── app/                  # Routes: login, desk, projects, teams, students, …
+│   ├── components/           # Shelf, DataTable, EntityForm, CrudPage, TopBar, …
+│   └── lib/                  # API client, session, types, role scope
 ├── curl-examples.md          # Example curl call for every endpoint
+├── postman_collection.json   # Postman collection for every endpoint
+├── PRODUCT.md                # Who the product is for and its constraints
+├── DESIGN.md                 # Frontend design system (colours, type, components)
+├── CHANGELOG.md              # Release history
 └── .env.example
 ```
 
@@ -63,7 +79,7 @@ Edit `.env` if your DB credentials or JWT secret differ from the defaults:
 DB_USER=system
 DB_PASSWORD=25BCE0014
 DB_CONNECT_STRING=localhost:1521/FREEPDB1
-PORT=3000
+PORT=3001
 JWT_SECRET=change_this_to_a_long_random_secret
 ```
 
@@ -96,7 +112,7 @@ npm start      # production
 npm run dev     # nodemon, auto-restart on changes
 ```
 
-Server runs on `http://localhost:3000` by default.
+Server runs on `http://localhost:3001` (the `PORT` in `.env.example`; it falls back to 3000 if `PORT` is unset).
 
 ## Frontend (Next.js)
 
@@ -105,11 +121,12 @@ The web app lives in `frontend/` and talks to this API over HTTP.
 ```bash
 cd frontend
 npm install
-cp .env.local.example .env.local   # NEXT_PUBLIC_API_URL=http://localhost:3000
-npm run dev                         # http://localhost:3001
+cp .env.local.example .env.local   # NEXT_PUBLIC_API_URL=http://localhost:3001
+npm run dev                         # http://localhost:3002
 ```
 
-Start the API first (`npm run dev` in the project root). Sign in with any
+Start the API first (`npm run dev` in the project root). If you change the
+API's `PORT`, set `NEXT_PUBLIC_API_URL` in `frontend/.env.local` to match. Sign in with any
 seeded account (password `password123`). The login page has a one-click
 "fill in the demo login" for each role.
 
@@ -124,9 +141,19 @@ seeded account (password `password123`). The login page has a one-click
 | Subjects | Technology, Domain and Category CRUD, plus every junction-table row |
 | Ledger | All 13 tables exactly as the API returns them |
 
-Roles are enforced in the UI: admins can change everything; faculty
+Roles are enforced in the UI only: admins can change everything; faculty
 evaluate and manage the teams they guide; students manage their own teams
-and projects.
+and projects. The API itself only guards `DELETE /students/:id` and
+`DELETE /faculty/:id` (see Authentication).
+
+Validation failures (`400` with `details`) appear next to the matching form
+field, and Oracle errors are rewritten into plain sentences, so no raw
+`ORA-` text reaches the screen.
+
+**Testing status:** every screen has been checked on desktop (1440px) and
+mobile (390px) against the seed data. Write actions (create, edit, delete,
+link/unlink, add member, evaluate) have **not yet been run against the live
+Oracle database**. Check them once before the review.
 
 ## Authentication
 

@@ -1,7 +1,7 @@
 // Thin client for the PRO Express API. Every call goes through `request`, so
 // auth headers and error shapes are handled in exactly one place.
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/$/, '');
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001').replace(/\/$/, '');
 
 const TOKEN_KEY = 'pro.session';
 

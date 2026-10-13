@@ -1,11 +1,11 @@
 # curl examples — PRO API
 
-Base URL assumed: `http://localhost:3000`
+Base URL assumed: `http://localhost:3001`
 
 Set a variable for convenience:
 
 ```bash
-BASE=http://localhost:3000
+BASE=http://localhost:3001
 ```
 
 ## Auth
