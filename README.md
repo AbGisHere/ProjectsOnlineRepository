@@ -186,6 +186,9 @@ free Supabase Postgres database (no credit card needed).
 8. **Redeploy** (Deployments → ⋯ → Redeploy) so the variables apply. Check
    that `https://<your-app>.vercel.app/api/departments` returns JSON, then
    sign in on the home page.
+9. **Optional: page-view analytics.** The app already includes Vercel Web
+   Analytics; enable it in the project's Analytics tab and visits start
+   showing there after the next deploy.
 
 If the API answers *"The server cannot reach the database"*, the Vercel logs
 (Logs tab) show the cause: `password authentication failed` is a wrong

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import { Atkinson_Hyperlegible_Mono, Atkinson_Hyperlegible_Next, Libre_Caslon_Display } from 'next/font/google';
 import { SessionProvider } from '@/lib/session';
 import { ToastProvider } from '@/components/Toast';
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SessionProvider>
           <ToastProvider>{children}</ToastProvider>
         </SessionProvider>
+        <Analytics />
       </body>
     </html>
   );

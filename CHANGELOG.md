@@ -38,6 +38,9 @@ under a dated heading when you tag or submit a version.
 - The login page no longer offers a one-click admin login.
 
 ### Added
+- Vercel Web Analytics (`@vercel/analytics`): `<Analytics />` in the
+  root layout counts page views on the deployed site. It does nothing
+  locally; turn it on under the Vercel project's Analytics tab.
 - Site icon (`app/icon.svg`): a bookcloth spine with gold foil rules, as on
   the shelf. Browsers no longer get a 404 for it.
 - `npm run set-password -- <email>`: sets a new password (hidden prompt) for
