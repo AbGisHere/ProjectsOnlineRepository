@@ -58,8 +58,8 @@ under a dated heading when you tag or submit a version.
   API checks (every read, search filter, create/update/delete, link, error
   mapping, JWT login, Better Auth sign-in/sign-out/session for all three
   roles, admin-only register), plus the login and signup pages and every
-  screen as each role in a browser. Not yet run against the hosted Supabase
-  database.
+  screen as each role in a browser. The same checks then passed against the
+  hosted Supabase database, which was reset to the seed data afterwards.
 
 ## [0.4.0] - 2026-10-14
 

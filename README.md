@@ -177,8 +177,10 @@ free Supabase Postgres database (no credit card needed).
    production URL (`https://<your-app>.vercel.app`, no trailing slash).
    Optional: `JWT_EXPIRES_IN`, `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
 7. **Put the functions next to the database.** In Settings → Functions, pick
-   the Vercel region nearest your Supabase region (Mumbai is `bom1`). Every
-   page runs several queries, so this matters.
+   the Vercel region nearest your Supabase region (the host in
+   `DATABASE_URL` names it: `ap-northeast-2` is Seoul, `icn1`;
+   `ap-south-1` is Mumbai, `bom1`). Every page runs several queries, so this
+   matters.
 8. **Redeploy** (Deployments → ⋯ → Redeploy) so the variables apply. Check
    that `https://<your-app>.vercel.app/api/departments` returns JSON, then
    sign in on the home page.
@@ -215,8 +217,9 @@ SQL error text reaches the screen.
 for every table, links, evaluations, unique/foreign-key/validation errors),
 JWT login, Better Auth sign-in and sign-out for all three roles, the
 `/signup` page, and every screen as student, faculty and admin. Every screen
-was also checked on desktop (1440px) and mobile (390px). Not yet run against
-the hosted Supabase database itself.
+was also checked on desktop (1440px) and mobile (390px). The same API and
+browser checks then passed against the hosted Supabase database
+(2026-10-14).
 
 ## Authentication
 
