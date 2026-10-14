@@ -8,3 +8,8 @@ npm-debug.log*
 .DS_Store
 *.log
 .vercel
+
+# Oracle wallet files (never commit)
+Wallet_*
+*.pem
+cwallet.sso

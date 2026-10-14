@@ -5,6 +5,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const oracledb = require('oracledb');
+const { dbConfig } = require('./dbConfig');
 
 async function run() {
   const file = process.argv[2];
@@ -19,11 +20,7 @@ async function run() {
   // end of a statement, while ignoring blank/comment-only chunks.
   const statements = splitStatements(sql);
 
-  const connection = await oracledb.getConnection({
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    connectString: process.env.DB_CONNECT_STRING,
-  });
+  const connection = await oracledb.getConnection(dbConfig());
 
   try {
     for (const stmt of statements) {

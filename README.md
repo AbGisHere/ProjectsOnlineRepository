@@ -53,7 +53,9 @@ PRO-Project-Online-Repository/
 │   ├── ddl.sql               # Table definitions (13 entities + Admin)
 │   └── seed.sql              # Sample data for the demo
 ├── scripts/
-│   └── runSql.js             # Runs ddl.sql / seed.sql against Oracle
+│   ├── runSql.js             # Runs ddl.sql / seed.sql against Oracle
+│   ├── setPassword.js        # npm run set-password -- <email>
+│   └── dbConfig.js           # Connection settings (incl. the ADB wallet)
 ├── curl-examples.md          # Example curl call for every endpoint
 ├── postman_collection.json   # Postman collection for every endpoint
 ├── PRODUCT.md                # Who the product is for and its constraints
@@ -151,30 +153,51 @@ at `http://localhost:3001/api`; `GET /api` is a health check.
 
 ## Deploying to Vercel
 
-The whole project is one Vercel deployment: pages and API together.
+The whole project is one Vercel deployment: pages and API together. The
+database is a free Oracle Autonomous Database, reached over mutual TLS with
+the database's wallet, which is passed to Vercel as an environment variable
+(nothing to upload, and the database doesn't need an IP allow list).
 
 1. **Create the database.** In Oracle Cloud (free tier), create an
-   *Autonomous Database* (Transaction Processing, "Always Free"). Under
-   **Network**, choose *Secure access from everywhere*, and turn **off**
-   *Require mutual TLS (mTLS) authentication* so the app can connect without
-   a wallet. Set the `ADMIN` password.
-2. **Copy the connection string.** On the database's **Database connection**
-   page, pick *TLS* and copy the `_low` connection string.
-3. **Load the schema** from your machine. Put the cloud values in `.env`
-   (`DB_USER=ADMIN`, `DB_PASSWORD`, `DB_CONNECT_STRING=<the TLS string>`), then
-   run `npm run ddl` and `npm run seed`.
-4. **Import the repo into Vercel** (New Project → import from GitHub). The
-   framework is detected as Next.js; keep the root directory as the repo root.
+   *Autonomous Database*: workload *Transaction Processing*, *Always Free*
+   on. Set the `ADMIN` password. Under **Network**, keep *Secure access from
+   everywhere* and leave *Require mutual TLS (mTLS) authentication* ticked.
+2. **Download the wallet.** On the database page: **Database connection** →
+   *Download wallet*. Pick a wallet password, then unzip the file somewhere
+   **outside** the repo. You need two things from it:
+   - `ewallet.pem`
+   - the `<dbname>_low` entry in `tnsnames.ora`: the whole
+     `(description=...)` value, on one line.
+3. **Fill in `.env`** (never commit it):
+   ```
+   DB_USER=ADMIN
+   DB_PASSWORD=<the ADMIN password>
+   DB_CONNECT_STRING=<the _low (description=...) value>
+   DB_WALLET_PEM=<base64 of ewallet.pem>
+   DB_WALLET_PASSWORD=<the wallet password>
+   ```
+   Get the base64 on a Mac with `base64 -i ewallet.pem | pbcopy`, then paste.
+4. **Load the schema and data** from your machine: `npm run ddl`, then
+   `npm run seed`.
 5. **Set your admin password** against the cloud database:
    `npm run set-password -- abg.592006@gmail.com`.
-6. **Set the environment variables** in the Vercel project: `DB_USER`,
-   `DB_PASSWORD`, `DB_CONNECT_STRING`, `BETTER_AUTH_SECRET` and `JWT_SECRET`
-   (two different long random strings, e.g. `openssl rand -base64 32`), and
-   `BETTER_AUTH_URL` set to your production URL
-   (`https://<your-app>.vercel.app`). Optional: `JWT_EXPIRES_IN`,
-   `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
-7. **Deploy.** Open `https://<your-app>.vercel.app/api` to check the API, then
+6. **Set the environment variables** in the Vercel project (Settings →
+   Environment Variables), for Production and Preview: the five `DB_*`
+   values from step 3, `BETTER_AUTH_SECRET` and `JWT_SECRET` (two different
+   random strings from `openssl rand -base64 32`), and `BETTER_AUTH_URL` set
+   to the production URL (`https://<your-app>.vercel.app`, no trailing
+   slash). Optional: `JWT_EXPIRES_IN`, `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
+7. **Put the functions next to the database.** In Settings → Functions, set
+   the region closest to your Oracle region (for example Mumbai, `bom1`, for
+   an India region). Every page makes several queries, so this matters.
+8. **Redeploy** (Deployments → ⋯ → Redeploy) so the new variables apply.
+   Check `https://<your-app>.vercel.app/api/departments` returns JSON, then
    sign in on the home page.
+
+If a deploy can't reach the database, the Vercel function logs (Logs tab)
+show the Oracle error: `ORA-01017` is a wrong user or password, `NJS-` wallet
+errors mean `DB_WALLET_PEM` or `DB_WALLET_PASSWORD` is off, and a timeout
+usually means the connect string isn't the `_low` mTLS one.
 
 ## What's in the app
 

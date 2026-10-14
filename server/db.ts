@@ -16,6 +16,17 @@ export type Row = Record<string, unknown>;
 
 const g = globalThis as unknown as { __proPool?: Promise<oracledb.Pool> };
 
+// Mutual TLS for Oracle Autonomous Database without wallet files on disk:
+// DB_WALLET_PEM holds the wallet's ewallet.pem (raw PEM or base64 of it).
+function walletOptions() {
+  const pem = (process.env.DB_WALLET_PEM || '').trim();
+  if (!pem) return {};
+  return {
+    walletContent: pem.startsWith('-----BEGIN') ? pem : Buffer.from(pem, 'base64').toString('utf8'),
+    walletPassword: process.env.DB_WALLET_PASSWORD,
+  };
+}
+
 function getPool(): Promise<oracledb.Pool> {
   if (!g.__proPool) {
     g.__proPool = oracledb
@@ -23,6 +34,7 @@ function getPool(): Promise<oracledb.Pool> {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         connectString: process.env.DB_CONNECT_STRING,
+        ...walletOptions(),
         // Small pool: serverless instances each hold their own.
         poolMin: 0,
         poolMax: Number(process.env.DB_POOL_MAX) || 4,

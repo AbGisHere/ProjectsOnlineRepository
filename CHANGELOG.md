@@ -13,8 +13,18 @@ under a dated heading when you tag or submit a version.
 - **One admin: `abg.592006@gmail.com`**, replacing the two seeded demo
   admins. It signs in through Better Auth like everyone else.
 - The login page no longer offers a one-click admin login.
+- README deploy guide rewritten around the wallet. The old steps said to turn
+  off mTLS, which Oracle only allows once an IP allow list is set, and
+  Vercel has no fixed IPs. Added a step to run Vercel functions in the region
+  nearest the database, and a troubleshooting note.
 
 ### Added
+- **Wallet (mutual TLS) connections to Oracle Autonomous Database** through
+  two new environment variables, `DB_WALLET_PEM` (the wallet's `ewallet.pem`,
+  as base64 or raw PEM) and `DB_WALLET_PASSWORD`. The app and the scripts
+  connect without wallet files on disk, so it works on Vercel with mTLS left
+  on and no IP allow list. `scripts/dbConfig.js` holds the scripts' shared
+  connection settings.
 - `npm run set-password -- <email>`: sets a new password (hidden prompt) for
   any account in both the person table and Better Auth, and signs out its
   sessions. Use it on the admin account right after seeding.

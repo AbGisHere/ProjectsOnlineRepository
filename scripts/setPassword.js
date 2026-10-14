@@ -6,6 +6,7 @@ require('dotenv').config();
 const readline = require('readline');
 const bcrypt = require('bcryptjs');
 const oracledb = require('oracledb');
+const { dbConfig } = require('./dbConfig');
 
 const TABLES = { student: ['Student', 'Student_ID'], faculty: ['Faculty', 'Faculty_ID'], admin: ['Admin', 'Admin_ID'] };
 
@@ -40,11 +41,7 @@ async function run() {
     process.exit(1);
   }
 
-  const conn = await oracledb.getConnection({
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    connectString: process.env.DB_CONNECT_STRING,
-  });
+  const conn = await oracledb.getConnection(dbConfig());
   try {
     const user = await conn.execute(
       'SELECT id, user_role, ref_id FROM auth_user WHERE LOWER(email) = :email',
