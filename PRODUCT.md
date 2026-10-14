@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-One Next.js app (user's choice) serves both the UI and the REST API (route handlers under `app/api/`), on Oracle DB via `oracledb` (thin mode), with Better Auth (email + password, cookie sessions, custom Oracle adapter) for the web app, JWT for API clients, and bcryptjs. Deployed as one Vercel project against a free Oracle Autonomous Database; runs locally against Oracle in Docker. The API was moved from Express on 2026-10-14 so everything deploys once. See `README.md`.
+One Next.js app (user's choice) serves both the UI and the REST API (route handlers under `app/api/`), on PostgreSQL via `pg`, with Better Auth (email + password, cookie sessions, built-in Postgres support) for the web app, JWT for API clients, and bcryptjs. Deployed as one Vercel project against a free Supabase Postgres database. The database moved from Oracle to Postgres on 2026-10-14 (user's choice: Oracle Cloud needs a credit card, and the course only requires SQL). The API was moved from Express on 2026-10-14 so everything deploys once. See `README.md`.
 
 ## Users
 
@@ -60,7 +60,7 @@ Name: **PRO: Project Online Repository**. No institution branding, logo or palet
 1. **Coverage before ornament.** Every entity and relationship is reachable and editable. A missing table loses more marks than a plain one.
 2. **Relationships are the product.** Always show the links: project → team → leader, guide and members; project → technologies, domains and categories; project → evaluations and average score.
 3. **Role-appropriate, not role-locked.** Each role lands on its own job, but the shared repository and search stay available to everyone.
-4. **Errors speak the user's language.** FK and unique-constraint failures and validation details appear as clear, field-level messages, never as raw Oracle errors.
+4. **Errors speak the user's language.** FK and unique-constraint failures and validation details appear as clear, field-level messages, never as raw database errors.
 
 ## Accessibility & Inclusion
 

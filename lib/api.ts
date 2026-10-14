@@ -38,19 +38,10 @@ function humanizeValidation(field: string, message: string): string {
   return `Check the ${f}.`;
 }
 
-// The API's error middleware already maps the common Oracle errors; this
-// covers the rest so no raw ORA- text reaches the screen.
+// The API already turns database errors into sentences; this rewrites the
+// common ones for the screen.
 function friendlyMessage(status: number, raw: string): string {
   if (!raw) return status >= 500 ? 'The server hit an unexpected error. Try again in a moment.' : 'The request could not be completed.';
-  if (/ORA-\d+|NJS-\d+|DPI-\d+/.test(raw)) {
-    if (/ORA-01400/.test(raw)) return 'A required field is missing.';
-    if (/ORA-02290/.test(raw)) return 'One of the values is outside what the database allows (check year, status or score).';
-    if (/ORA-12899/.test(raw)) return 'One of the values is too long for its field.';
-    if (/ORA-01722/.test(raw)) return 'A number field contains something that is not a number.';
-    if (/ORA-01861|ORA-01830|ORA-01841/.test(raw)) return 'Dates must be written as YYYY-MM-DD.';
-    if (/NJS-|DPI-|ORA-12541|ORA-12514/.test(raw)) return 'The server cannot reach the Oracle database. Check that the database is running and the DB_ settings are correct.';
-    return 'The database rejected this change. Check the values and try again.';
-  }
   if (raw === 'Validation failed') return 'Some fields need attention.';
   if (/foreign key violation/.test(raw)) return 'One of the linked records (team, student, faculty, department…) does not exist.';
   if (/referenced by other rows/.test(raw)) return 'This record is still linked to other records. Remove those links first, then delete it.';

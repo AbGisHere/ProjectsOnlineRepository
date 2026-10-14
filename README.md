@@ -1,9 +1,9 @@
 # PRO — Project Online Repository
 
 A DBMS course project: a single **Next.js** app that serves both the web UI
-and the REST API, backed by **Oracle Database** through `oracledb`. It runs
-locally against Oracle in Docker (set up with SQLcl) and deploys to **Vercel**
-against a free **Oracle Autonomous Database**.
+and the REST API, backed by **PostgreSQL** through `pg` (node-postgres). It
+deploys to **Vercel** against a free **Supabase** Postgres database, and runs
+locally against the same database (or any Postgres 14+).
 
 | Part | Where | Local URL |
 |---|---|---|
@@ -15,8 +15,8 @@ Changes are recorded in [CHANGELOG.md](CHANGELOG.md).
 ## Stack
 
 - Next.js 16 (App Router) + React 19 + TypeScript
-- Oracle DB (`oracledb` driver, thin mode, so no Oracle Instant Client is needed)
-- [Better Auth](https://better-auth.com) for web sign-in (email + password, cookie sessions), through a custom Oracle adapter
+- PostgreSQL via `pg` (node-postgres); hosted free on [Supabase](https://supabase.com)
+- [Better Auth](https://better-auth.com) for web sign-in (email + password, cookie sessions), using its built-in Postgres support
 - JWT tokens (`jsonwebtoken`) for API clients such as Postman; `bcryptjs` password hashing for both
 - Request validation in `server/validate.ts` (same rules and `400` shape the
   Express version used)
@@ -35,12 +35,12 @@ PRO-Project-Online-Repository/
 │   ├── layout.tsx            # Fonts, session + toast providers
 │   └── globals.css           # Design tokens and component styles
 ├── server/                   # Server-only code used by app/api
-│   ├── db.ts                 # Oracle connection pool + execute()
+│   ├── db.ts                 # Postgres connection pool + execute()
+│   ├── dbConfig.ts           # DATABASE_URL → pool settings (TLS for Supabase)
 │   ├── http.ts               # route() wrapper: parses input, maps errors to JSON
-│   ├── errors.ts             # ApiError + Oracle error → readable message
+│   ├── errors.ts             # ApiError + Postgres error → readable message
 │   ├── auth/
 │   │   ├── index.ts          # Better Auth config (tables, bcrypt, sign-up rules)
-│   │   ├── oracleAdapter.ts  # Better Auth database adapter for Oracle
 │   │   ├── accounts.ts       # Keeps auth_user/auth_account in step with Student/Faculty/Admin
 │   │   ├── guard.ts          # authenticate(): session cookie or Bearer JWT
 │   │   └── jwt.ts            # JWT sign/verify for API clients
@@ -53,9 +53,9 @@ PRO-Project-Online-Repository/
 │   ├── ddl.sql               # Table definitions (13 entities + Admin)
 │   └── seed.sql              # Sample data for the demo
 ├── scripts/
-│   ├── runSql.js             # Runs ddl.sql / seed.sql against Oracle
+│   ├── runSql.js             # Runs ddl.sql / seed.sql in one transaction
 │   ├── setPassword.js        # npm run set-password -- <email>
-│   └── dbConfig.js           # Connection settings (incl. the ADB wallet)
+│   └── dbConfig.js           # Connection settings for the scripts
 ├── curl-examples.md          # Example curl call for every endpoint
 ├── postman_collection.json   # Postman collection for every endpoint
 ├── PRODUCT.md                # Who the product is for and its constraints
@@ -69,9 +69,9 @@ PRO-Project-Online-Repository/
 ### 1. Prerequisites
 
 - Node.js 20.9+ (required by Next.js 16)
-- Oracle DB reachable from your machine: either the local Docker instance at
-  `localhost:1521/FREEPDB1`, or an Oracle Autonomous Database (see
-  [Deploying to Vercel](#deploying-to-vercel)).
+- A Postgres database: the free Supabase project from
+  [Deploying to Vercel](#deploying-to-vercel) (simplest: local runs and the
+  deployment share it), or any local Postgres 14+.
 
 ### 2. Install dependencies
 
@@ -85,12 +85,10 @@ npm install
 cp .env.example .env
 ```
 
-Edit `.env` if your DB credentials or JWT secret differ from the defaults:
+Set `DATABASE_URL` to your database's connection string, and the secrets:
 
 ```
-DB_USER=system
-DB_PASSWORD=25BCE0014
-DB_CONNECT_STRING=localhost:1521/FREEPDB1
+DATABASE_URL=postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres
 BETTER_AUTH_SECRET=change_this_to_a_long_random_secret
 BETTER_AUTH_URL=http://localhost:3001
 JWT_SECRET=change_this_to_a_different_long_random_secret
@@ -106,7 +104,10 @@ This drops (if present) and recreates all 14 tables (the 13 entities from the
 brief, plus a small `Admin` table needed for the Admin login role) with their
 PK/FK constraints, plus Better Auth's four sign-in tables (`auth_user`,
 `auth_session`, `auth_account`, `auth_verification`). They're prefixed `auth_`
-because `USER` and `SESSION` are reserved words in Oracle.
+because `USER` is a reserved word in SQL. Row Level Security is switched on
+for every table with no policies, so Supabase's public Data API can't read
+them; the app connects as the table owner and is unaffected. The script runs
+in one transaction, so a failure leaves the database as it was.
 
 ### 5. Seed sample data
 
@@ -153,51 +154,39 @@ at `http://localhost:3001/api`; `GET /api` is a health check.
 
 ## Deploying to Vercel
 
-The whole project is one Vercel deployment: pages and API together. The
-database is a free Oracle Autonomous Database, reached over mutual TLS with
-the database's wallet, which is passed to Vercel as an environment variable
-(nothing to upload, and the database doesn't need an IP allow list).
+The whole project is one Vercel deployment: pages and API together, with a
+free Supabase Postgres database (no credit card needed).
 
-1. **Create the database.** In Oracle Cloud (free tier), create an
-   *Autonomous Database*: workload *Transaction Processing*, *Always Free*
-   on. Set the `ADMIN` password. Under **Network**, keep *Secure access from
-   everywhere* and leave *Require mutual TLS (mTLS) authentication* ticked.
-2. **Download the wallet.** On the database page: **Database connection** →
-   *Download wallet*. Pick a wallet password, then unzip the file somewhere
-   **outside** the repo. You need two things from it:
-   - `ewallet.pem`
-   - the `<dbname>_low` entry in `tnsnames.ora`: the whole
-     `(description=...)` value, on one line.
-3. **Fill in `.env`** (never commit it):
-   ```
-   DB_USER=ADMIN
-   DB_PASSWORD=<the ADMIN password>
-   DB_CONNECT_STRING=<the _low (description=...) value>
-   DB_WALLET_PEM=<base64 of ewallet.pem>
-   DB_WALLET_PASSWORD=<the wallet password>
-   ```
-   Get the base64 on a Mac with `base64 -i ewallet.pem | pbcopy`, then paste.
+1. **Create the database.** Sign in at [supabase.com](https://supabase.com)
+   (GitHub sign-in works), then **New project**. Pick a name, set a
+   **database password** (save it), and choose the region nearest your users,
+   for example *South Asia (Mumbai)*. Wait a minute for it to finish.
+2. **Copy the connection string.** Click **Connect** at the top of the
+   project, choose **Transaction pooler**, and copy the URI. It looks like
+   `postgresql://postgres.<ref>:[YOUR-PASSWORD]@aws-0-<region>.pooler.supabase.com:6543/postgres`.
+   Replace `[YOUR-PASSWORD]` with the database password. If the password has
+   symbols such as `@`, `#` or `/`, URL-encode them (`@` → `%40`).
+3. **Put it in `.env`** as `DATABASE_URL=...` (never commit `.env`).
 4. **Load the schema and data** from your machine: `npm run ddl`, then
-   `npm run seed`.
-5. **Set your admin password** against the cloud database:
-   `npm run set-password -- abg.592006@gmail.com`.
+   `npm run seed`. The tables then show in Supabase's **Table Editor**.
+5. **Set your admin password**: `npm run set-password -- abg.592006@gmail.com`.
 6. **Set the environment variables** in the Vercel project (Settings →
-   Environment Variables), for Production and Preview: the five `DB_*`
-   values from step 3, `BETTER_AUTH_SECRET` and `JWT_SECRET` (two different
-   random strings from `openssl rand -base64 32`), and `BETTER_AUTH_URL` set
-   to the production URL (`https://<your-app>.vercel.app`, no trailing
-   slash). Optional: `JWT_EXPIRES_IN`, `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
-7. **Put the functions next to the database.** In Settings → Functions, set
-   the region closest to your Oracle region (for example Mumbai, `bom1`, for
-   an India region). Every page makes several queries, so this matters.
-8. **Redeploy** (Deployments → ⋯ → Redeploy) so the new variables apply.
-   Check `https://<your-app>.vercel.app/api/departments` returns JSON, then
+   Environment Variables, for Production and Preview): `DATABASE_URL` (the
+   same string), `BETTER_AUTH_SECRET` and `JWT_SECRET` (two different random
+   strings from `openssl rand -base64 32`), and `BETTER_AUTH_URL` set to the
+   production URL (`https://<your-app>.vercel.app`, no trailing slash).
+   Optional: `JWT_EXPIRES_IN`, `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
+7. **Put the functions next to the database.** In Settings → Functions, pick
+   the Vercel region nearest your Supabase region (Mumbai is `bom1`). Every
+   page runs several queries, so this matters.
+8. **Redeploy** (Deployments → ⋯ → Redeploy) so the variables apply. Check
+   that `https://<your-app>.vercel.app/api/departments` returns JSON, then
    sign in on the home page.
 
-If a deploy can't reach the database, the Vercel function logs (Logs tab)
-show the Oracle error: `ORA-01017` is a wrong user or password, `NJS-` wallet
-errors mean `DB_WALLET_PEM` or `DB_WALLET_PASSWORD` is off, and a timeout
-usually means the connect string isn't the `_low` mTLS one.
+If the API answers *"The server cannot reach the database"*, the Vercel logs
+(Logs tab) show the cause: `password authentication failed` is a wrong
+password in `DATABASE_URL`, `ENOTFOUND` a mistyped host. *"The database
+tables are missing"* means step 4 hasn't run against that database.
 
 ## What's in the app
 
@@ -218,14 +207,16 @@ and projects. The API itself only guards `DELETE /api/students/:id` and
 `DELETE /api/faculty/:id` (see Authentication).
 
 Validation failures (`400` with `details`) appear next to the matching form
-field, and Oracle errors are rewritten into plain sentences, so no raw
-`ORA-` text reaches the screen.
+field, and database errors are rewritten into plain sentences, so no raw
+SQL error text reaches the screen.
 
-**Testing status:** every screen has been checked on desktop (1440px) and
-mobile (390px) against the seed data. The API's validation, email rules and
-error responses have been checked without a database. Reads, writes and
-Better Auth sign-in against a live Oracle database have **not yet been run**.
-Check them once before the review.
+**Testing status:** checked against a real Postgres database loaded from
+`ddl.sql` and `seed.sql`: every endpoint (reads, search, create/update/delete
+for every table, links, evaluations, unique/foreign-key/validation errors),
+JWT login, Better Auth sign-in and sign-out for all three roles, the
+`/signup` page, and every screen as student, faculty and admin. Every screen
+was also checked on desktop (1440px) and mobile (390px). Not yet run against
+the hosted Supabase database itself.
 
 ## Authentication
 
@@ -235,8 +226,9 @@ There are two ways to sign in, backed by the same accounts and passwords.
 [Better Auth](https://better-auth.com) with email and password, and stay
 signed in with a cookie session (7 days). Its endpoints live under
 `/api/auth/*` (for example `POST /api/auth/sign-in/email`,
-`POST /api/auth/sign-out`, `GET /api/auth/get-session`). Better Auth has no
-Oracle adapter, so `server/auth/oracleAdapter.ts` provides one.
+`POST /api/auth/sign-out`, `GET /api/auth/get-session`). It stores users and
+sessions in the `auth_*` tables through its built-in Postgres support, on the
+app's own connection pool.
 
 **API clients: JWT.** `POST /api/auth/login` returns a JWT for Postman, curl
 and other clients. Send it as `Authorization: Bearer <token>`.
@@ -371,19 +363,24 @@ See `curl-examples.md` for a runnable example of every endpoint above.
   into Next.js route handlers, so the UI and API deploy together. Every SQL
   statement, validation rule and error mapping was carried over unchanged;
   only the request/response plumbing differs.
-- **Connection pooling**: `server/db.ts` creates one Oracle connection pool
-  per server instance (`oracledb.createPool`) and hands out/reclaims a
-  connection per query, rather than opening a new connection each time. On
-  Vercel each warm function instance reuses its pool; `DB_POOL_MAX` keeps it
-  small.
+- **Connection pooling**: `server/db.ts` creates one `pg` pool per server
+  instance and hands out/reclaims a connection per query, rather than opening
+  a new connection each time. On Vercel each warm function instance reuses
+  its pool (`DB_POOL_MAX` keeps it small), and Supabase's transaction pooler
+  shares the database's connections between instances.
+- **Oracle → Postgres**: the project began on Oracle and moved to Postgres so
+  it could be hosted free without a credit card. The 13 tables, keys,
+  constraints and queries are the same; `server/db.ts` keeps the API's JSON
+  identical (upper-case column names, numbers as numbers, dates as
+  `YYYY-MM-DD`) and accepts the original `:name` bind syntax.
 - **Validation**: every POST/PUT handler validates its body before running
   SQL; failures return `400` with a `details` array listing each invalid
   field.
 - **Error handling**: every handler is wrapped by `route()` in
-  `server/http.ts`, so a thrown error (including Oracle constraint
-  violations) becomes the standard JSON error. `server/errors.ts` maps
-  common Oracle error numbers (unique constraint, FK violation) to readable
-  messages.
+  `server/http.ts`, so a thrown error (including constraint violations)
+  becomes the standard JSON error. `server/errors.ts` maps Postgres error
+  codes (unique, foreign key, check, not-null, bad number or date) to
+  readable messages.
 - **Team creation guard**: `POST /api/teams` explicitly checks that
   `Leader_ID` exists in `Student` and `Guide_ID` exists in `Faculty` before
-  inserting, returning a clear `400` instead of a raw Oracle FK error.
+  inserting, returning a clear `400` instead of a raw FK error.

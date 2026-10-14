@@ -140,8 +140,8 @@ export const projects = {
       binds.technology = `%${technology}%`;
     }
 
-    // No DISTINCT: Abstract is a CLOB and Oracle can't compare CLOBs
-    // (ORA-22848). Every filter is an EXISTS subquery, so rows can't repeat.
+    // Every filter is an EXISTS subquery, so rows can't repeat and no
+    // DISTINCT is needed.
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
     const result = await execute(`${PROJECT_SELECT} ${where} ORDER BY p.Project_ID`, binds);
     return Response.json({ success: true, count: result.rows?.length ?? 0, data: result.rows });
@@ -265,7 +265,7 @@ export const evaluations = {
     const { evaluation_id, project_id, faculty_id, score, feedback } = body;
     await execute(
       `INSERT INTO Evaluation (Evaluation_ID, Project_ID, Faculty_ID, Score, Feedback, Evaluation_Date)
-       VALUES (:evaluation_id, :project_id, :faculty_id, :score, :feedback, SYSDATE)`,
+       VALUES (:evaluation_id, :project_id, :faculty_id, :score, :feedback, CURRENT_DATE)`,
       { evaluation_id, project_id, faculty_id, score, feedback: feedback || null }
     );
     return ok({ data: { evaluation_id, project_id, faculty_id, score } }, 201);

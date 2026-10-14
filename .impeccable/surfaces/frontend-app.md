@@ -11,7 +11,7 @@ Scope: the whole Next.js frontend (`frontend/`): login, three role dashboards, t
 
 Audience and job: students, faculty and admins equally (see PRODUCT.md). The reviewer grades it tomorrow (2026-10-14). First screen: login → that role's dashboard. Role gating is UI-only: admins get full CRUD; faculty evaluate and manage the teams they guide; students manage their own team and projects. Everyone can browse the repository.
 
-Must feel right: data-first, gradeable, every entity reachable, no raw Oracle errors. Must not feel like a shadcn admin template or be too flashy to grade.
+Must feel right: data-first, gradeable, every entity reachable, no raw database errors. Must not feel like a shadcn admin template or be too flashy to grade.
 
 ## Direction contract
 

@@ -246,11 +246,11 @@ INSERT INTO Evaluation (Evaluation_ID, Project_ID, Faculty_ID, Score, Feedback, 
 -- seeded person signs in to the web app with password123.
 -- ===========================================================================
 INSERT INTO auth_user (id, name, email, email_verified, user_role, ref_id)
-  SELECT 'student-' || Student_ID, Name, Email, 1, 'student', Student_ID FROM Student;
+  SELECT 'student-' || Student_ID, Name, Email, TRUE, 'student', Student_ID FROM Student;
 INSERT INTO auth_user (id, name, email, email_verified, user_role, ref_id)
-  SELECT 'faculty-' || Faculty_ID, Name, Email, 1, 'faculty', Faculty_ID FROM Faculty;
+  SELECT 'faculty-' || Faculty_ID, Name, Email, TRUE, 'faculty', Faculty_ID FROM Faculty;
 INSERT INTO auth_user (id, name, email, email_verified, user_role, ref_id)
-  SELECT 'admin-' || Admin_ID, Name, Email, 1, 'admin', Admin_ID FROM Admin;
+  SELECT 'admin-' || Admin_ID, Name, Email, TRUE, 'admin', Admin_ID FROM Admin;
 
 INSERT INTO auth_account (id, account_id, provider_id, user_id, password)
   SELECT 'acct-student-' || Student_ID, 'student-' || Student_ID, 'credential', 'student-' || Student_ID, Password FROM Student;
@@ -259,4 +259,3 @@ INSERT INTO auth_account (id, account_id, provider_id, user_id, password)
 INSERT INTO auth_account (id, account_id, provider_id, user_id, password)
   SELECT 'acct-admin-' || Admin_ID, 'admin-' || Admin_ID, 'credential', 'admin-' || Admin_ID, Password FROM Admin;
 
-COMMIT;

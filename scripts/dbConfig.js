@@ -1,19 +1,14 @@
-// Oracle connection options from the environment for the scripts (server/db.ts
-// does the same). With DB_WALLET_PEM set, connects over mutual TLS using the
-// Autonomous Database wallet's ewallet.pem (raw PEM or base64 of it), so no
-// wallet files need to exist on disk (Vercel).
-function dbConfig() {
-  const config = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    connectString: process.env.DB_CONNECT_STRING,
-  };
-  const pem = (process.env.DB_WALLET_PEM || '').trim();
-  if (pem) {
-    config.walletContent = pem.startsWith('-----BEGIN') ? pem : Buffer.from(pem, 'base64').toString('utf8');
-    config.walletPassword = process.env.DB_WALLET_PASSWORD;
-  }
-  return config;
+// Postgres connection settings from DATABASE_URL for the npm scripts
+// (server/dbConfig.ts is the same logic for the app). Hosted databases such
+// as Supabase use TLS; localhost, or DB_SSL=disable, connects without it.
+function poolConfig() {
+  const raw = process.env.DATABASE_URL;
+  if (!raw) throw new Error('DATABASE_URL is not set. Copy .env.example to .env and fill it in.');
+  const url = new URL(raw);
+  url.searchParams.delete('sslmode');
+  const local = ['localhost', '127.0.0.1', '::1'].includes(url.hostname);
+  const ssl = process.env.DB_SSL === 'disable' || local ? false : { rejectUnauthorized: false };
+  return { connectionString: url.toString(), ssl };
 }
 
-module.exports = { dbConfig };
+module.exports = { poolConfig };

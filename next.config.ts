@@ -4,8 +4,8 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   turbopack: { root: path.join(__dirname) },
-  // node-oracledb loads driver files at runtime; keep it out of the bundle.
-  serverExternalPackages: ['oracledb'],
+  // node-postgres is a plain Node package; keep it out of the bundle.
+  serverExternalPackages: ['pg'],
 };
 
 export default nextConfig;

@@ -1,5 +1,5 @@
-// Row shapes as the API returns them. oracledb's OBJECT out-format upper-cases
-// every unquoted column name, so the keys here are upper-case too.
+// Row shapes as the API returns them. server/db.ts upper-cases every column
+// name (as the original Oracle version did), so the keys here are upper-case.
 
 export type Status = 'ONGOING' | 'SUBMITTED' | 'COMPLETED' | 'REJECTED';
 export const STATUSES: Status[] = ['ONGOING', 'SUBMITTED', 'COMPLETED', 'REJECTED'];

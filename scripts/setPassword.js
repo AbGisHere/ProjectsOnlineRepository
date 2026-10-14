@@ -5,8 +5,8 @@
 require('dotenv').config();
 const readline = require('readline');
 const bcrypt = require('bcryptjs');
-const oracledb = require('oracledb');
-const { dbConfig } = require('./dbConfig');
+const { Client } = require('pg');
+const { poolConfig } = require('./dbConfig');
 
 const TABLES = { student: ['Student', 'Student_ID'], faculty: ['Faculty', 'Faculty_ID'], admin: ['Admin', 'Admin_ID'] };
 
@@ -41,31 +41,33 @@ async function run() {
     process.exit(1);
   }
 
-  const conn = await oracledb.getConnection(dbConfig());
+  const conn = new Client(poolConfig());
+  await conn.connect();
   try {
-    const user = await conn.execute(
-      'SELECT id, user_role, ref_id FROM auth_user WHERE LOWER(email) = :email',
-      { email },
-      { outFormat: oracledb.OUT_FORMAT_OBJECT }
-    );
+    const user = await conn.query('SELECT id, user_role, ref_id FROM auth_user WHERE LOWER(email) = $1', [email]);
     const row = user.rows[0];
     if (!row) {
       console.error(`No account uses ${email}. Run "npm run seed" first, or check the spelling.`);
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
     const hash = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT_ROUNDS) || 10);
-    const [table, idCol] = TABLES[row.USER_ROLE];
-    await conn.execute(`UPDATE ${table} SET Password = :hash WHERE ${idCol} = :id`, { hash, id: row.REF_ID });
-    await conn.execute(
-      "UPDATE auth_account SET password = :hash, updated_at = SYSTIMESTAMP WHERE user_id = :uid AND provider_id = 'credential'",
-      { hash, uid: row.ID }
+    const [table, idCol] = TABLES[row.user_role];
+    await conn.query('BEGIN');
+    await conn.query(`UPDATE ${table} SET Password = $1 WHERE ${idCol} = $2`, [hash, row.ref_id]);
+    await conn.query(
+      "UPDATE auth_account SET password = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND provider_id = 'credential'",
+      [hash, row.id]
     );
     // Sign the account out everywhere, so the old password's sessions end.
-    await conn.execute('DELETE FROM auth_session WHERE user_id = :uid', { uid: row.ID });
-    await conn.commit();
-    console.log(`Password updated for ${email} (${row.USER_ROLE}). Existing sessions were signed out.`);
+    await conn.query('DELETE FROM auth_session WHERE user_id = $1', [row.id]);
+    await conn.query('COMMIT');
+    console.log(`Password updated for ${email} (${row.user_role}). Existing sessions were signed out.`);
+  } catch (err) {
+    await conn.query('ROLLBACK').catch(() => {});
+    throw err;
   } finally {
-    await conn.close();
+    await conn.end();
   }
 }
 

@@ -1,4 +1,4 @@
-// Wraps a route handler so thrown errors (ApiError or Oracle) become the
+// Wraps a route handler so thrown errors (ApiError or Postgres) become the
 // API's standard JSON error response. Plays the role Express's asyncHandler
 // + errorHandler middleware used to.
 import { ApiError, toErrorResponse } from './errors';

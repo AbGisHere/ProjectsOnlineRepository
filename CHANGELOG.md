@@ -8,32 +8,58 @@ under a dated heading when you tag or submit a version.
 ## [Unreleased]
 
 ### Changed
+- **The database is now PostgreSQL (hosted free on Supabase) instead of
+  Oracle.** Oracle Cloud's free tier needs a credit card; the course only
+  requires SQL. Same 13 tables (plus `Admin` and the four `auth_*` tables),
+  same keys, constraints and queries.
+  - `sql/ddl.sql` and `sql/seed.sql` rewritten for Postgres (`INTEGER`,
+    `NUMERIC(5,2)`, `VARCHAR`, `TEXT`, `BOOLEAN`, `TIMESTAMPTZ`;
+    `DROP TABLE IF EXISTS` instead of PL/SQL blocks). `npm run ddl`/`seed`
+    run each file in one transaction and stop on the first error.
+  - The API's JSON is unchanged: upper-case column names, numbers as numbers,
+    and dates as `YYYY-MM-DD`. `server/db.ts` keeps the `:name` bind syntax,
+    so the handlers' SQL barely changed (`SYSDATE` → `CURRENT_DATE`).
+  - Better Auth uses its built-in Postgres support on the app's pool.
+    `server/auth/oracleAdapter.ts` is gone.
+  - `server/errors.ts` maps Postgres error codes to the same messages as
+    before (unique, foreign key), plus readable messages for check,
+    not-null, bad number/date, missing tables and "cannot reach the
+    database". No raw SQL error text reaches the client.
+  - One environment variable, `DATABASE_URL`, replaces `DB_USER`,
+    `DB_PASSWORD` and `DB_CONNECT_STRING`. TLS is on for any host other than
+    localhost.
+  - Dependencies: `oracledb` replaced by `pg`; `kysely` added (used by Better
+    Auth for Postgres).
+  - README deploy guide rewritten for Supabase + Vercel.
 - Demo student login is now `student@vitstudent.ac.in` (Aarav Sharma, #1001).
   Faculty stays `rakesh.kumar@vit.ac.in`.
 - **One admin: `abg.592006@gmail.com`**, replacing the two seeded demo
   admins. It signs in through Better Auth like everyone else.
 - The login page no longer offers a one-click admin login.
-- README deploy guide rewritten around the wallet. The old steps said to turn
-  off mTLS, which Oracle only allows once an IP allow list is set, and
-  Vercel has no fixed IPs. Added a step to run Vercel functions in the region
-  nearest the database, and a troubleshooting note.
 
 ### Added
-- **Wallet (mutual TLS) connections to Oracle Autonomous Database** through
-  two new environment variables, `DB_WALLET_PEM` (the wallet's `ewallet.pem`,
-  as base64 or raw PEM) and `DB_WALLET_PASSWORD`. The app and the scripts
-  connect without wallet files on disk, so it works on Vercel with mTLS left
-  on and no IP allow list. `scripts/dbConfig.js` holds the scripts' shared
-  connection settings.
 - `npm run set-password -- <email>`: sets a new password (hidden prompt) for
   any account in both the person table and Better Auth, and signs out its
-  sessions. Use it on the admin account right after seeding.
+  sessions, in one transaction. Use it on the admin account right after
+  seeding.
 
 ### Security
+- Row Level Security is enabled on every table (no policies), so Supabase's
+  public Data API can't read password hashes or sessions. The app connects as
+  the table owner and is unaffected.
 - `POST /api/auth/register` with `role: "admin"` now requires a signed-in
   admin (session or Bearer token). Before this, anyone could create an admin
   account. The Postman collection's "Register Admin" request now sends
   `{{admin_token}}` from "Login (Admin)".
+- `.gitignore` excludes wallet and `.pem` files.
+
+### Tested
+- Against a real Postgres database loaded from `ddl.sql` and `seed.sql`: 124
+  API checks (every read, search filter, create/update/delete, link, error
+  mapping, JWT login, Better Auth sign-in/sign-out/session for all three
+  roles, admin-only register), plus the login and signup pages and every
+  screen as each role in a browser. Not yet run against the hosted Supabase
+  database.
 
 ## [0.4.0] - 2026-10-14
 

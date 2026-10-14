@@ -6,8 +6,7 @@ import bcrypt from 'bcryptjs';
 import { APIError, betterAuth } from 'better-auth';
 import { nextCookies } from 'better-auth/next-js';
 import { emailRuleError, roleForEmail, type AccountRole } from '@/lib/emailRules';
-import { execute } from '../db';
-import { oracleAdapter } from './oracleAdapter';
+import { execute, getPool } from '../db';
 
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
 
@@ -30,7 +29,8 @@ export const auth = betterAuth({
   appName: 'PRO',
   secret: process.env.BETTER_AUTH_SECRET || process.env.JWT_SECRET,
   baseURL: process.env.BETTER_AUTH_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined),
-  database: oracleAdapter(),
+  // Better Auth's built-in Postgres support (Kysely), on the app's pool.
+  database: getPool(),
 
   emailAndPassword: {
     enabled: true,
@@ -58,8 +58,8 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24, // refresh once a day
   },
 
-  // Oracle names: USER and SESSION are reserved words, so tables are auth_*,
-  // and columns are snake_case.
+  // Tables are auth_* (USER is a reserved word in SQL) with snake_case
+  // columns, as created in sql/ddl.sql.
   user: {
     modelName: 'auth_user',
     fields: { emailVerified: 'email_verified', createdAt: 'created_at', updatedAt: 'updated_at' },
