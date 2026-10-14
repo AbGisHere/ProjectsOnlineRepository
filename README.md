@@ -174,7 +174,9 @@ free Supabase Postgres database (no credit card needed).
    Environment Variables, for Production and Preview): `DATABASE_URL` (the
    same string), `BETTER_AUTH_SECRET` and `JWT_SECRET` (two different random
    strings from `openssl rand -base64 32`), and `BETTER_AUTH_URL` set to the
-   production URL (`https://<your-app>.vercel.app`, no trailing slash).
+   public URL: your custom domain if you added one (this project uses
+   `https://pro.abgupta.me`), otherwise `https://<your-app>.vercel.app`.
+   Sign-in also works on the deployment's own `*.vercel.app` addresses.
    Optional: `JWT_EXPIRES_IN`, `BCRYPT_SALT_ROUNDS`, `DB_POOL_MAX`.
 7. **Put the functions next to the database.** In Settings → Functions, pick
    the Vercel region nearest your Supabase region (the host in

@@ -25,10 +25,28 @@ async function findPerson(email: string) {
   return id === undefined ? null : { role, id: Number(id) };
 }
 
+/** 'pro.example.com' or 'https://pro.example.com/' -> 'https://pro.example.com'. */
+function origin(value: string | undefined) {
+  const v = value?.trim().replace(/\/+$/, '');
+  if (!v) return undefined;
+  return /^https?:\/\//.test(v) ? v : `https://${v}`;
+}
+
+// The public URL (BETTER_AUTH_URL), plus Vercel's own *.vercel.app addresses
+// for this deployment, so signing in works on either.
+const baseURL = origin(process.env.BETTER_AUTH_URL) ?? origin(process.env.VERCEL_URL);
+const trustedOrigins = [
+  baseURL,
+  origin(process.env.VERCEL_URL),
+  origin(process.env.VERCEL_BRANCH_URL),
+  origin(process.env.VERCEL_PROJECT_PRODUCTION_URL),
+].filter((o): o is string => !!o);
+
 export const auth = betterAuth({
   appName: 'PRO',
   secret: process.env.BETTER_AUTH_SECRET || process.env.JWT_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined),
+  baseURL,
+  trustedOrigins,
   // Better Auth's built-in Postgres support (Kysely), on the app's pool.
   database: getPool(),
 

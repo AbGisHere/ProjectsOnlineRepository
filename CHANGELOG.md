@@ -38,10 +38,28 @@ under a dated heading when you tag or submit a version.
 - The login page no longer offers a one-click admin login.
 
 ### Added
+- Site icon (`app/icon.svg`): a bookcloth spine with gold foil rules, as on
+  the shelf. Browsers no longer get a 404 for it.
 - `npm run set-password -- <email>`: sets a new password (hidden prompt) for
   any account in both the person table and Better Auth, and signs out its
   sessions, in one transaction. Use it on the admin account right after
   seeding.
+
+### Fixed
+- The Vercel build failed with `Invalid base URL` when `BETTER_AUTH_URL` had
+  no `https://` (for example `pro.abgupta.me`). The scheme is now added if
+  missing and a trailing slash dropped, and the browser's auth client uses
+  the page's own address instead of reading `BETTER_AUTH_URL` while pages
+  are prerendered.
+- Signing in on the deployment's `*.vercel.app` addresses failed once
+  `BETTER_AUTH_URL` pointed at the custom domain. Vercel's deployment, branch
+  and production addresses are now trusted origins too.
+
+### Deployed
+- Live at https://pro.abgupta.me (Vercel + Supabase, Seoul). Checked there:
+  every read endpoint, search, average score, Better Auth sign-in, session
+  and sign-out for all three roles, JWT login, and every screen as each role
+  in a browser.
 
 ### Security
 - Row Level Security is enabled on every table (no policies), so Supabase's
